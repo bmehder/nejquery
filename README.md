@@ -1,3 +1,5 @@
 # Description
 
-A trivial functional programming library.# nejquery
+A trivial functional programming library.
+
+# nejquery
