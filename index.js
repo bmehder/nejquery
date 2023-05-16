@@ -79,6 +79,15 @@ export const reverse = arr => [...arr].reverse()
 
 export const flat = arr => arr.flat(1)
 
+export const flatDeep = arr => {
+  const reducer = (acc, item) => {
+    Array.isArray(item) ? (acc = [...acc, ...flatDeep(item)]) : (acc = [...acc, item])
+    return acc
+  }
+
+  return fold(reducer)([])(arr)
+}
+
 export const find = cb => arr => arr.find(cb)
 
 export const findIndex = cb => arr => arr.findIndex(cb)
