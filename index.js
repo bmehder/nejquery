@@ -88,6 +88,13 @@ export const findIndex = cb => arr => arr.findIndex(cb)
 
 export const findLastIndex = cb => arr => arr.findLastIndex(cb)
 
+export const findAllIndexes = arg => arr => {
+  const folder = (acc, item, idx) => arg === item ? [...acc, idx] : acc
+  return fold(folder)([])(arr)
+}
+
+log(findAllIndexes(3)([1,2,3,3,4,3,2,1,3]))
+
 export const every = cb => arr => arr.every(cb ?? identity)
 
 export const some = cb => arr => arr.some(cb ?? identity)
@@ -241,11 +248,6 @@ export const isSet = arg => arg instanceof Set
 export const isMap = arg => arg instanceof Map
 
 // Helpers
-export const getIndexesOf = arg => arr => {
-  const folder = (acc, item, idx) => (isEq(arg)(item) ? [...acc, idx] : acc)
-  return fold(folder)([])(arr)
-}
-
 export const setCountMap = arr =>
   arr.reduce((map, item) => map.set(item, map.get(item) + 1 || 1), new Map())
 
