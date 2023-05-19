@@ -2,14 +2,10 @@
 export const identity = arg => arg
 
 export const pipe =
-  (...fns) =>
-  arg =>
-    fns.reduce((acc, fn) => fn(acc), arg)
+  (...fns) => arg => fns.reduce((acc, fn) => fn(acc), arg)
 
 export const compose =
-  (...fns) =>
-  arg =>
-    fns.reduceRight((acc, fn) => fn(acc), arg)
+  (...fns) => arg => fns.reduceRight((acc, fn) => fn(acc), arg)
 
 export const tap = fn => arg => (fn(arg), identity(arg))
 
@@ -80,10 +76,8 @@ export const reverse = arr => [...arr].reverse()
 export const flat = arr => arr.flat(1)
 
 export const flatDeep = arr => {
-  const reducer = (acc, item) => {
-    Array.isArray(item) ? (acc = [...acc, ...flatDeep(item)]) : (acc = [...acc, item])
-    return acc
-  }
+  const reducer = (acc, item) =>
+    Array.isArray(item) ? [...acc, ...flatDeep(item)] : [...acc, item]
 
   return fold(reducer)([])(arr)
 }
@@ -105,12 +99,12 @@ export const joinArray = join('')
 export const count = arg => arr => [...arr].filter(x => x === arg).length
 
 export const chunk = size => arr => arr.reduce((acc, _, index, array) => {
-		index % size === 0
-			? acc = [...acc, slice(index)(index + size)(array)]
-			: acc
-		return acc
+  index % size === 0
+    ? acc = [...acc, slice(index)(index + size)(array)]
+    : acc
+  return acc
 }, [])
-  
+
 export const uniq = arr => [...new Set(arr)]
 
 export const union = a => b => [...new Set([...a, ...b])]
@@ -247,6 +241,11 @@ export const isSet = arg => arg instanceof Set
 export const isMap = arg => arg instanceof Map
 
 // Helpers
+export const getIndexesOf = arg => arr => {
+  const folder = (acc, item, idx) => (isEq(arg)(item) ? [...acc, idx] : acc)
+  return fold(folder)([])(arr)
+}
+
 export const setCountMap = arr =>
   arr.reduce((map, item) => map.set(item, map.get(item) + 1 || 1), new Map())
 
