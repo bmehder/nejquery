@@ -93,8 +93,6 @@ export const findAllIndexes = arg => arr => {
   return fold(folder)([])(arr)
 }
 
-log(findAllIndexes(3)([1,2,3,3,4,3,2,1,3]))
-
 export const every = cb => arr => arr.every(cb ?? identity)
 
 export const some = cb => arr => arr.some(cb ?? identity)
