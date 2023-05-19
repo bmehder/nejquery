@@ -6,6 +6,10 @@
   "type": "module",
   "scripts": {},
   "meta": {},
+  "repository": {
+  "type": "git",
+  "url": "https://github.com/bmehder/nejquery.git"
+  },
   "devDependencies": {
     "eslint": "^8.40.0"
   }
