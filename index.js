@@ -118,6 +118,8 @@ export const intersection = a => b => [...new Set(a)].filter(x => new Set(b).has
 
 export const difference = a => b => a.filter(x => !b.includes(x))
 
+export const hasAllElems = (arr1, arr2) => arr1.every(elem => arr2.includes(elem))
+
 export const shuffle = arr => [...arr].sort(() => 0.5 - Math.random())
 
 // Number functions
@@ -188,6 +190,8 @@ export const padStart = len => arg => str => str.padStart(len, arg)
 
 export const padEnd = len => arg => str => str.padEnd(len, arg)
 
+export const truncateWords = num => str => str.split(' ').splice(0, num).join(' ')
+
 // predicates
 export const not =
   pred =>
@@ -241,6 +245,8 @@ export const isNotEmptyArray = arr => Array.isArray(arr) && arr.length > 0
 
 export const isNullish = arg => arg == null
 
+export const notUndefined = not(includes(undefined))
+
 export const isSet = arg => arg instanceof Set
 
 export const isMap = arg => arg instanceof Map
@@ -274,6 +280,8 @@ export const delay =
   ms =>
   (...args) =>
     setTimeout(fn, +ms ?? 0, ...args)
+
+export const uuid = crypto.randomUUID()
 
 export const toArray = obj => Object.entries(obj)
 
