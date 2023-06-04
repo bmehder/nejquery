@@ -122,6 +122,8 @@ export const hasAllElems = (arr1, arr2) => arr1.every(elem => arr2.includes(elem
 
 export const shuffle = arr => [...arr].sort(() => 0.5 - Math.random())
 
+export const toObject = arr => Object.fromEntries(arr)
+
 // Number functions
 export const inc = n => n += 1
 
@@ -192,6 +194,14 @@ export const padEnd = len => arg => str => str.padEnd(len, arg)
 
 export const truncateWords = num => str => str.split(' ').splice(0, num).join(' ')
 
+export const transformLetter = fn => arg => String.fromCharCode(fn(arg.charCodeAt(0)))
+
+export const getLength = strOrNum => strOrNum.length
+
+export const removeNonLetters = pipe(split(''), filter(isLetter), join(''))
+
+export const removeNonNumbers = pipe(splitChars, keep(isNumber), joinArray)
+
 // predicates
 export const not =
   pred =>
@@ -251,6 +261,17 @@ export const isSet = arg => arg instanceof Set
 
 export const isMap = arg => arg instanceof Map
 
+// Objects
+export const pluck = prop => obj => obj[prop]
+
+export const toArray = obj => Object.entries(obj)
+
+export const toPairs = mapObj => [...mapObj]
+
+export const getKeys = obj => Object.keys(obj)
+
+export const getValues = obj => Object.values(obj)
+
 // Helpers
 export const setCountMap = arr =>
   arr.reduce((map, item) => map.set(item, map.get(item) + 1 || 1), new Map())
@@ -261,34 +282,12 @@ export const setRange = (start = 1, end = 10) =>
     []
   )
 
-export const pluck = prop => obj => obj[prop]
-
-export const getLength = strOrNum => strOrNum.length
-
 export const getRandomNumber = (max = 1) => Math.floor(Math.random() * max + 1)
 
 export const nab = async url => await (await fetch(url)).json()
-
-export const ifElse = pred => truthCb => falseCb => pred ? truthCb : falseCb
-
-export const removeNonLetters = pipe(split(''), filter(isLetter), join(''))
-
-export const removeNonNumbers = pipe(splitChars, keep(isNumber), joinArray)
 
 export const delay =
   fn =>
   ms =>
   (...args) =>
     setTimeout(fn, +ms ?? 0, ...args)
-
-export const uuid = crypto.randomUUID()
-
-export const toArray = obj => Object.entries(obj)
-
-export const toObject = arr => Object.fromEntries(arr)
-
-export const toPairs = mapObj => [...mapObj]
-
-export const getKeys = obj => Object.keys(obj)
-
-export const getValues = obj => Object.values(obj)
