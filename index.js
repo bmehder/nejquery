@@ -137,6 +137,8 @@ export const mul = a => b => a * b
 
 export const div = a => b => a / b
 
+export const divideBy = num => arg => arg / num
+
 export const square = n => n * n
 
 export const negative = n => -n
@@ -197,10 +199,6 @@ export const truncateWords = num => str => str.split(' ').splice(0, num).join(' 
 export const transformLetter = fn => arg => String.fromCharCode(fn(arg.charCodeAt(0)))
 
 export const getLength = strOrNum => strOrNum.length
-
-export const removeNonLetters = pipe(split(''), filter(isLetter), join(''))
-
-export const removeNonNumbers = pipe(splitChars, keep(isNumber), joinArray)
 
 // predicates
 export const not =
@@ -276,11 +274,13 @@ export const getValues = obj => Object.values(obj)
 export const setCountMap = arr =>
   arr.reduce((map, item) => map.set(item, map.get(item) + 1 || 1), new Map())
 
-export const setRange = (start = 1, end = 10) =>
+export const range = (start = 1, end = 10) =>
   [...Array(end - start + 1).keys()].reduce(
     (acc, _, index) => ((acc = [...acc, index + start]), acc),
     []
   )
+
+export const getAllPairs = arr => map(a => map(b => [a, b])(arr))(arr)
 
 export const getRandomNumber = (max = 1) => Math.floor(Math.random() * max + 1)
 
@@ -291,3 +291,7 @@ export const delay =
   ms =>
   (...args) =>
     setTimeout(fn, +ms ?? 0, ...args)
+
+export const removeNonLetters = pipe(split(''), filter(isLetter), join(''))
+
+export const removeNonNumbers = pipe(splitChars, keep(isNumber), joinArray)
