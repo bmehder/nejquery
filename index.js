@@ -1,26 +1,33 @@
 // Utils
-/**
- * @template T
- * @param {T} x
- * @returns {T}
- */
-export const identity = arg => arg
+export const identity = x => x
 
 export const pipe =
 	(...fns) =>
-	arg =>
-		fns.reduce((acc, fn) => fn(acc), arg)
+	x =>
+		fns.reduce((acc, fn) => fn(acc), x)
 
 export const compose =
 	(...fns) =>
-	arg =>
-		fns.reduceRight((acc, fn) => fn(acc), arg)
+	x =>
+		fns.reduceRight((acc, fn) => fn(acc), x)
 
-export const tap = fn => arg => (fn(arg), identity(arg))
+export const tap = fn => x => (fn(x), identity(x))
 
 export const invoke = (...fns) => fns.forEach(fn => fn)
 
-// console functions
+export function curry(fn) {
+	return function curried(...args) {
+		if (args.length >= fn.length) {
+			return fn.apply(this, args)
+		} else {
+			return function (...args2) {
+				return curried.apply(this, args.concat(args2))
+			}
+		}
+	}
+}
+
+// debugging functions
 export const log = console.log
 
 export const table = console.table
@@ -33,269 +40,256 @@ export const groupEnd = console.groupEnd
 
 export const collapsed = console.groupCollapsed
 
-export const tell = note => arg => note ? console.log(note, arg) : console.log(arg)
+export const tell = label => x => label ? console.log(label, x) : console.log(x)
 
 export const note = compose(tap, tell)
 
 export const see = tap(log)
 
-export const getType = arg => log(typeof arg)
+export const getType = x => typeof x
 
 // Array functions
-export const map = cb => arr => arr.map(cb ?? identity)
+export const map = fn => xs => xs.map(fn ?? identity)
 
-export const forEach = cb => arr => arr.forEach(cb ?? identity)
+export const forEach = fn => xs => xs.forEach(fn ?? identity)
 
-export const filter = pred => arr => [...arr].filter(pred ?? identity)
+export const filter = fn => xs => [...xs].filter(fn ?? identity)
 
 export const keep = filter
 
-export const reject = pred => arr => [...arr].filter(not(pred) ?? identity)
+export const reject = fn => xs => [...xs].filter(not(fn) ?? identity)
 
-export const reduce = cb => arr => [...arr].reduce(cb)
+export const reduce = fn => xs => [...xs].reduce(fn)
 
-export const fold = cb => initial => arr => [...arr].reduce(cb, initial ?? arr[0])
+export const fold = fn => arg => xs => [...xs].reduce(fn, arg ?? xs[0])
 
 export const slice = start => end => strOrNum => strOrNum.slice(start, end)
 
 export const concat = a => b => a.concat(b)
 
-export const push = arr => val => [...arr, val]
+export const push = xs => x => [...xs, x]
 
-export const includes = arg => arr => arr.includes(arg)
+export const includes = x => xs => xs.includes(x)
 
-export const indexOf = arg => arr => arr.indexOf(arg)
+export const indexOf = x => xs => xs.indexOf(x)
 
-export const lastIndexOf = arg => arr => arr.lastIndexOf(arg)
+export const lastIndexOf = x => xs => xs.lastIndexOf(x)
 
-export const first = arr => arr.at(0)
+export const first = xs => xs.at(0)
 
 export const head = first
 
-export const last = arr => arr.at(-1)
+export const last = xs => xs.at(-1)
 
-export const at = arg => arr => arr.at(arg)
+export const flat = xs => xs.flat(1)
 
-export const toSorted = cb => arr => [...arr].sort(cb)
-
-export const sortStrings = arr => [...arr].sort((a, b) => a.localeCompare(b))
-
-export const reverse = arr => [...arr].reverse()
-
-export const flat = arr => arr.flat(1)
-
-export const flatDeep = arr => {
-	const reducer = (acc, item) =>
+export const flatDeep = xs => {
+	const fn = (acc, item) =>
 		Array.isArray(item) ? [...acc, ...flatDeep(item)] : [...acc, item]
 
-	return fold(reducer)([])(arr)
+	return fold(fn)([])(xs)
 }
 
-export const find = cb => arr => arr.find(cb)
+export const find = fn => xs => xs.find(fn)
 
-export const findIndex = cb => arr => arr.findIndex(cb)
+export const findIndex = fn => xs => xs.findIndex(fn)
 
-export const findLastIndex = cb => arr => arr.findLastIndex(cb)
+export const findLastIndex = fn => xs => xs.findLastIndex(fn)
 
-export const findAllIndexes = arg => arr => {
-	const folder = (acc, item, idx) => (arg === item ? [...acc, idx] : acc)
-	return fold(folder)([])(arr)
+export const findAllIndexes = arg => xs => {
+	const folder = (acc, x, i) => (arg === x ? [...acc, i] : acc)
+	return fold(folder)([])(xs)
 }
 
-export const every = cb => arr => arr.every(cb ?? identity)
+export const every = fn => xs => xs.every(fn)
 
-export const some = cb => arr => arr.some(cb ?? identity)
+export const some = fn => xs => xs.some(fn)
 
-export const join = sep => arr => arr.join(sep ?? '')
+export const join = x => xs => xs.join(x ?? '')
 
 export const joinArray = join('')
 
-export const count = arg => arr => [...arr].filter(x => x === arg).length
+export const count = x => xs => xs.filter(_x => _x === x).length
 
 export const getArrayKeys = xs => [...xs.keys()]
 
-export const chunk = size => arr =>
-	arr.reduce((acc, _, index, array) => {
-		index % size === 0 ? (acc = [...acc, slice(index)(index + size)(array)]) : acc
+export const chunk = size => xs =>
+	xs.reduce((acc, _, i, xs) => {
+		i % size === 0 ? (acc = [...acc, slice(i)(i + size)(xs)]) : acc
 		return acc
 	}, [])
 
-export const uniq = arr => [...new Set(arr)]
+export const uniq = xs => [...new Set(xs)]
 
-export const union = a => b => [...new Set([...a, ...b])]
+export const union = x => y => [...new Set([...x, ...y])]
 
-export const intersection = a => b => [...new Set(a)].filter(x => new Set(b).has(x))
+export const intersection = x => y => [...new Set(x)].filter(_x => new Set(y).has(_x))
 
-export const difference = a => b => a.filter(x => !b.includes(x))
+export const difference = x => y => a.filter(_x => !y.includes(_x))
 
-export const hasAllElems = (arr1, arr2) => arr1.every(elem => arr2.includes(elem))
+export const hasAllElems = (xs1, xs2) => xs1.every(x => xs2.includes(x))
 
-export const shuffle = arr => [...arr].sort(() => 0.5 - Math.random())
+export const shuffle = xs => xs.sort(() => 0.5 - Math.random())
 
-export const toObject = arr => Object.fromEntries(arr)
+export const toObject = xs => Object.fromEntries(xs)
 
 // Number functions
-export const inc = n => (n += 1)
+export const inc = x => (x += 1)
 
-export const dec = n => (n -= 1)
+export const dec = x => (x -= 1)
 
-export const add = a => b => a + b
+export const add = x => y => x + y
 
-export const sub = a => b => a + b
+export const sub = x => y => x + y
 
-export const mul = a => b => a * b
+export const mul = x => y => x * y
 
-export const div = a => b => b / a
+export const div = x => y => y / x
 
-export const divideBy = num => arg => arg / num
+export const square = x => x * x
 
-export const square = n => n * n
+export const negate = x => -x
 
-export const negative = n => -n
-
-export const sum = arr => arr.reduce((acc, item) => add(acc)(item))
+export const sum = xs => xs.reduce((acc, x) => add(acc)(x))
 
 export const min = (...args) => Math.min(...args)
 
 export const max = (...args) => Math.max(...args)
 
-export const floor = n => Math.floor(n)
+export const floor = Math.floor
 
-export const ceil = n => Math.ceil(n)
+export const ceil = Math.ceil
 
-export const round = n => Math.round(n)
+export const round = Math.round
 
-export const toFixed = len => arg => arg.toFixed(len)
+export const toFixed = arg => x => x.toFixed(arg)
 
-export const toLocaleString = num => num.toLocaleString('en-US')
+export const toLocaleString = arg => x => x.toLocaleString(arg)
 
 // String functions
-export const split = on => arr => arr.split(on ?? '')
+export const split = arg => x => x.split(arg ?? '')
 
 export const splitChars = split('')
 
 export const splitOnSpace = split(' ')
 
-export const substring = start => end => str => str.substring(start, end)
+export const substring = start => end => x => x.substring(start, end)
 
-export const replace = regex => replacement => str => str.replace(regex, replacement)
+export const replace = regex => arg => x => x.replace(regex, arg)
 
-export const replaceAll = regex => replacement => str =>
-	str.replaceAll(regex, replacement)
+export const replaceAll = regex => arg => x => x.replaceAll(regex, arg)
 
-export const repeat = times => str => str.repeat(times)
+export const repeat = arg => x => x.repeat(arg)
 
-export const trim = str => str.trim()
+export const trim = x => x.trim()
 
-export const stringify = str => JSON.stringify(str, null, 2)
+export const stringify = x => JSON.stringify(x, null, 2)
 
-export const parseJSON = str => JSON.parse(str)
+export const parseJSON = x => JSON.parse(x)
 
-export const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1)
+export const capitalize = x => x.charAt(0).toUpperCase() + x.slice(1)
 
-export const startsWith = arg => str => str.startsWith(arg)
+export const startsWith = arg => x => x.startsWith(arg)
 
-export const endsWith = arg => str => str.endsWith(arg)
+export const endsWith = arg => x => x.endsWith(arg)
 
-export const toLowerCase = str => str.toLocaleLowerCase()
+export const toLowerCase = x => x.toLowerCase()
 
-export const toUpperCase = str => str.toLocaleUpperCase()
+export const toUpperCase = x => x.toUpperCase()
 
-export const reverseWord = str => [...String(str)].reverse().join('')
+export const toLocaleLowerCase = x => x.toLocaleLowerCase()
 
-export const padStart = len => arg => str => str.padStart(len, arg)
+export const toLocaleUpperCase = x => x.toLocaleUpperCase()
 
-export const padEnd = len => arg => str => str.padEnd(len, arg)
+export const reverseWord = x => x.toReversed().join('')
 
-export const truncateWords = num => str => str.split(' ').splice(0, num).join(' ')
+export const padStart = len => arg => x => x.padStart(len, arg)
 
-export const transformLetter = fn => arg => String.fromCharCode(fn(arg.charCodeAt(0)))
+export const padEnd = len => arg => x => x.padEnd(len, arg)
 
-export const getLength = strOrNum => strOrNum.length
+export const truncateWords = arg => x => x.split(' ').splice(0, arg).join(' ')
+
+export const getLength = xs => xs.length
 
 // predicates
 export const not =
-	pred =>
+	fn =>
 	(...args) =>
-		!pred(...args)
+		!fn(...args)
 
-export const isNaN = arg => Number.isNaN(arg)
+export const isNaN = x => Number.isNaN(x)
 
-export const isLetter = arg =>
-	typeof arg == 'string' && arg.toLowerCase() !== arg.toUpperCase()
+export const isLetter = x => typeof x === 'string' && x.toLowerCase() !== x.toUpperCase()
 
-export const isNumber = args => !isNaN(+args)
+export const isNumber = x => !isNaN(+x)
 
-export const isSpecialChar = arg => isNaN(arg) && arg.toLowerCase() === arg.toUpperCase()
+export const isSpecialChar = x => isNaN(x) && x.toLowerCase() === x.toUpperCase()
 
-export const isLetterOrNumber = arg => isLetter(arg) || isNumber(arg)
+export const isLetterOrNumber = x => isLetter(x) || isNumber(x)
 
-export const isUpperCase = char => isLetter(char) && char === char.toUpperCase()
+export const isUpperCase = x => isLetter(x) && x === x.toUpperCase()
 
-export const isLowerCase = char => isLetter(char) && char === char.toLowerCase()
+export const isLowerCase = x => isLetter(x) && x === x.toLowerCase()
 
-export const isSpace = arg => Object.is(arg, ' ')
+export const isSpace = x => Object.is(x, ' ')
 
-export const isUniq = arr => new Set(arr).size === arr.length
+export const isUniq = xs => new Set(xs).size === xs.length
 
-export const isOdd = n => n % 2 !== 0
+export const isOdd = x => x % 2 !== 0
 
-export const isEven = n => n % 2 === 0
+export const isEven = x => x % 2 === 0
 
 export const isDivBy = x => y => y % x === 0
 
-export const isGt = n => arg => arg > n
+export const isGt = arg => x => x > arg
 
-export const isGtE = n => arg => arg >= n
+export const isGtE = arg => x => x >= arg
 
-export const isLt = n => arg => arg < n
+export const isLt = arg => x => x < arg
 
-export const isLtE = n => arg => arg <= n
+export const isLtE = arg => x => x <= arg
 
-export const isEq = a => b => a === b
+export const isEq = x => y => x === y
 
-export const isSame = a => b => Object.is(a, b)
+export const isSame = x => y => Object.is(x, y)
 
-export const isLooseEq = a => b => a == b
+export const isLooseEq = x => y => x == y
 
 export const isClickOrEnter = evt => evt.type === 'click' || evt.key === 'Enter'
 
-export const isArray = arg => Array.isArray(arg)
+export const isArray = x => Array.isArray(x)
 
-export const isEmptyArray = arr => Array.isArray(arr) && arr.length === 0
+export const isEmptyArray = xs => Array.isArray(xs) && xs.length === 0
 
-export const isNotEmptyArray = arr => Array.isArray(arr) && arr.length > 0
+export const isNotEmptyArray = xs => Array.isArray(xs) && xs.length > 0
 
-export const isNullish = arg => arg == null
+export const isNullish = x => x == null
 
-export const notUndefined = not(includes(undefined))
+export const isSet = x => x instanceof Set
 
-export const isSet = arg => arg instanceof Set
-
-export const isMap = arg => arg instanceof Map
+export const isMap = x => x instanceof Map
 
 // Objects
-export const pluck = prop => obj => obj[prop]
+export const pluck = x => obj => obj[x]
 
-export const toArray = obj => Object.entries(obj)
+export const toArray = Object.entries
 
-export const toPairs = mapObj => [...mapObj]
+export const toPairs = x => [...x]
 
-export const getKeys = obj => Object.keys(obj)
+export const getKeys = Object.keys
 
-export const getValues = obj => Object.values(obj)
+export const getValues = Object.values
 
 // Helpers
-export const setCountMap = arr =>
-	arr.reduce((map, item) => map.set(item, map.get(item) + 1 || 1), new Map())
+export const setCountMap = xs =>
+	xs.reduce((map, x) => map.set(x, map.get(x) + 1 || 1), new Map())
 
-export const range = (start = 1, end = 10) =>
-	[...Array(end - start + 1).keys()].reduce(
-		(acc, _, index) => ((acc = [...acc, index + start]), acc),
-		[]
-	)
+export const range =
+	(start = 1) =>
+	end =>
+		start === end ? [start] : [start, ...range(start + 1)(end)]
 
-export const getAllPairs = arr => map(a => map(b => [a, b])(arr))(arr)
+export const getAllPairs = xs => map(x => map(y => [x, y])(xs))(xs)
 
 export const getRandomNumber = (max = 1) => Math.floor(Math.random() * max + 1)
 
@@ -311,12 +305,10 @@ export const removeNonLetters = pipe(split(''), filter(isLetter), join(''))
 
 export const removeNonNumbers = pipe(splitChars, keep(isNumber), joinArray)
 
-export const showPopover = elem => elem.showPopover()
+export const showPopover = x => x.showPopover()
 
 export const nap = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 export const select = (...xs) => xs.map(x => document.querySelector(x))
 
 export const selectAll = (...xs) => xs.map(x => document.querySelectorAll(x))
-
-export const when = pred => thenFn => elseFn => x => pred(x) ? thenFn(x) : elseFn(x)
