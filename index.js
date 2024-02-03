@@ -1,11 +1,20 @@
 // Utils
+/**
+ * @template T
+ * @param {T} x
+ * @returns {T}
+ */
 export const identity = arg => arg
 
 export const pipe =
-  (...fns) => arg => fns.reduce((acc, fn) => fn(acc), arg)
+	(...fns) =>
+	arg =>
+		fns.reduce((acc, fn) => fn(acc), arg)
 
 export const compose =
-  (...fns) => arg => fns.reduceRight((acc, fn) => fn(acc), arg)
+	(...fns) =>
+	arg =>
+		fns.reduceRight((acc, fn) => fn(acc), arg)
 
 export const tap = fn => arg => (fn(arg), identity(arg))
 
@@ -30,7 +39,7 @@ export const note = compose(tap, tell)
 
 export const see = tap(log)
 
-export const getType = arg => (log(typeof arg))
+export const getType = arg => log(typeof arg)
 
 // Array functions
 export const map = cb => arr => arr.map(cb ?? identity)
@@ -76,10 +85,10 @@ export const reverse = arr => [...arr].reverse()
 export const flat = arr => arr.flat(1)
 
 export const flatDeep = arr => {
-  const reducer = (acc, item) =>
-    Array.isArray(item) ? [...acc, ...flatDeep(item)] : [...acc, item]
+	const reducer = (acc, item) =>
+		Array.isArray(item) ? [...acc, ...flatDeep(item)] : [...acc, item]
 
-  return fold(reducer)([])(arr)
+	return fold(reducer)([])(arr)
 }
 
 export const find = cb => arr => arr.find(cb)
@@ -89,8 +98,8 @@ export const findIndex = cb => arr => arr.findIndex(cb)
 export const findLastIndex = cb => arr => arr.findLastIndex(cb)
 
 export const findAllIndexes = arg => arr => {
-  const folder = (acc, item, idx) => arg === item ? [...acc, idx] : acc
-  return fold(folder)([])(arr)
+	const folder = (acc, item, idx) => (arg === item ? [...acc, idx] : acc)
+	return fold(folder)([])(arr)
 }
 
 export const every = cb => arr => arr.every(cb ?? identity)
@@ -103,12 +112,13 @@ export const joinArray = join('')
 
 export const count = arg => arr => [...arr].filter(x => x === arg).length
 
-export const chunk = size => arr => arr.reduce((acc, _, index, array) => {
-  index % size === 0
-    ? acc = [...acc, slice(index)(index + size)(array)]
-    : acc
-  return acc
-}, [])
+export const getArrayKeys = xs => [...xs.keys()]
+
+export const chunk = size => arr =>
+	arr.reduce((acc, _, index, array) => {
+		index % size === 0 ? (acc = [...acc, slice(index)(index + size)(array)]) : acc
+		return acc
+	}, [])
 
 export const uniq = arr => [...new Set(arr)]
 
@@ -125,9 +135,9 @@ export const shuffle = arr => [...arr].sort(() => 0.5 - Math.random())
 export const toObject = arr => Object.fromEntries(arr)
 
 // Number functions
-export const inc = n => n += 1
+export const inc = n => (n += 1)
 
-export const dec = n => n -= 1
+export const dec = n => (n -= 1)
 
 export const add = a => b => a + b
 
@@ -135,7 +145,7 @@ export const sub = a => b => a + b
 
 export const mul = a => b => a * b
 
-export const div = a => b => a / b
+export const div = a => b => b / a
 
 export const divideBy = num => arg => arg / num
 
@@ -170,6 +180,9 @@ export const substring = start => end => str => str.substring(start, end)
 
 export const replace = regex => replacement => str => str.replace(regex, replacement)
 
+export const replaceAll = regex => replacement => str =>
+	str.replaceAll(regex, replacement)
+
 export const repeat = times => str => str.repeat(times)
 
 export const trim = str => str.trim()
@@ -202,14 +215,14 @@ export const getLength = strOrNum => strOrNum.length
 
 // predicates
 export const not =
-  pred =>
-  (...args) =>
-    !pred(...args)
+	pred =>
+	(...args) =>
+		!pred(...args)
 
 export const isNaN = arg => Number.isNaN(arg)
 
 export const isLetter = arg =>
-  typeof arg == 'string' && arg.toLowerCase() !== arg.toUpperCase()
+	typeof arg == 'string' && arg.toLowerCase() !== arg.toUpperCase()
 
 export const isNumber = args => !isNaN(+args)
 
@@ -228,6 +241,8 @@ export const isUniq = arr => new Set(arr).size === arr.length
 export const isOdd = n => n % 2 !== 0
 
 export const isEven = n => n % 2 === 0
+
+export const isDivBy = x => y => y % x === 0
 
 export const isGt = n => arg => arg > n
 
@@ -272,13 +287,13 @@ export const getValues = obj => Object.values(obj)
 
 // Helpers
 export const setCountMap = arr =>
-  arr.reduce((map, item) => map.set(item, map.get(item) + 1 || 1), new Map())
+	arr.reduce((map, item) => map.set(item, map.get(item) + 1 || 1), new Map())
 
 export const range = (start = 1, end = 10) =>
-  [...Array(end - start + 1).keys()].reduce(
-    (acc, _, index) => ((acc = [...acc, index + start]), acc),
-    []
-  )
+	[...Array(end - start + 1).keys()].reduce(
+		(acc, _, index) => ((acc = [...acc, index + start]), acc),
+		[]
+	)
 
 export const getAllPairs = arr => map(a => map(b => [a, b])(arr))(arr)
 
@@ -287,11 +302,21 @@ export const getRandomNumber = (max = 1) => Math.floor(Math.random() * max + 1)
 export const nab = async url => await (await fetch(url)).json()
 
 export const delay =
-  fn =>
-  ms =>
-  (...args) =>
-    setTimeout(fn, +ms ?? 0, ...args)
+	ms =>
+	fn =>
+	(...args) =>
+		setTimeout(fn, +ms ?? 0, ...args)
 
 export const removeNonLetters = pipe(split(''), filter(isLetter), join(''))
 
 export const removeNonNumbers = pipe(splitChars, keep(isNumber), joinArray)
+
+export const showPopover = elem => elem.showPopover()
+
+export const nap = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+export const select = (...xs) => xs.map(x => document.querySelector(x))
+
+export const selectAll = (...xs) => xs.map(x => document.querySelectorAll(x))
+
+export const when = pred => thenFn => elseFn => x => pred(x) ? thenFn(x) : elseFn(x)

@@ -1,12 +1,12 @@
 const categories = new Map([
   ['utils', 5],
   ['debugging', 10],
-  ['array', 39],
+  ['array', 40],
   ['number', 17],
-  ['string', 20],
-  ['predicates', 26],
+  ['string', 21],
+  ['predicates', 27],
   ['objects', 5],
-  ['helpers', 8],
+  ['helpers', 13],
 ])
 
 
