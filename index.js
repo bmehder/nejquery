@@ -1,19 +1,28 @@
 // Utils
 export const identity = x => x
 
+export const apply = fn => x => fn(x)
+
+export const apply2 = (acc, fn) => fn(acc)
+
 export const pipe =
 	(...fns) =>
 	x =>
-		fns.reduce((acc, fn) => fn(acc), x)
+		fns.reduce(apply, x)
 
 export const compose =
 	(...fns) =>
 	x =>
-		fns.reduceRight((acc, fn) => fn(acc), x)
+		fns.reduceRight(apply, x)
 
-export const tap = fn => x => (fn(x), identity(x))
+export const both = f => g => x => [f(x), g(x)]
 
-export const invoke = (...fns) => fns.forEach(fn => fn)
+export const applyMap =
+	(...fns) =>
+	x =>
+		fns.map(fn => fn(x))
+
+export const many = applyMap
 
 export function curry(fn) {
 	return function curried(...args) {
@@ -27,7 +36,19 @@ export function curry(fn) {
 	}
 }
 
+export const partial = curry
+
+export const uncurry =
+	fn =>
+	(...args) =>
+		(
+			_fn => _args =>
+				_args.reduce((_f, arg) => _f(arg), _fn)
+		)(fn)(args)
+
 // debugging functions
+export const tap = fn => x => (fn(x), identity(x))
+
 export const log = console.log
 
 export const table = console.table
@@ -44,6 +65,8 @@ export const tell = label => x => label ? console.log(label, x) : console.log(x)
 
 export const note = compose(tap, tell)
 
+export const snitch = note
+
 export const see = tap(log)
 
 export const getType = x => typeof x
@@ -53,21 +76,25 @@ export const map = fn => xs => xs.map(fn ?? identity)
 
 export const forEach = fn => xs => xs.forEach(fn ?? identity)
 
-export const filter = fn => xs => [...xs].filter(fn ?? identity)
+export const filter = fn => xs => xs.filter(fn ?? identity)
 
 export const keep = filter
 
-export const reject = fn => xs => [...xs].filter(not(fn) ?? identity)
+export const reject = fn => xs => xs.filter(not(fn) ?? identity)
 
-export const reduce = fn => xs => [...xs].reduce(fn)
+export const reduce = fn => xs => xs.reduce(fn)
 
-export const fold = fn => arg => xs => [...xs].reduce(fn, arg ?? xs[0])
+export const fold = fn => arg => xs => xs.reduce(fn, arg ?? xs[0])
 
 export const slice = start => end => strOrNum => strOrNum.slice(start, end)
 
+export const take = x => xs => xs.slice(0, x)
+
 export const concat = a => b => a.concat(b)
 
-export const push = xs => x => [...xs, x]
+export const cons = x => xs => [x, ...xs]
+
+export const push = x => xs => [...xs, x]
 
 export const includes = x => xs => xs.includes(x)
 
@@ -75,13 +102,21 @@ export const indexOf = x => xs => xs.indexOf(x)
 
 export const lastIndexOf = x => xs => xs.lastIndexOf(x)
 
+export const at = x => xs => xs.at(x)
+
 export const first = xs => xs.at(0)
+
+export const second = xs => xs.at(1)
 
 export const head = first
 
+export const tail = xs => xs.slice(1)
+
 export const last = xs => xs.at(-1)
 
-export const flat = xs => xs.flat(1)
+export const flat = x => xs => xs.flat(x)
+
+export const flatten = xs => xs.flat(1)
 
 export const flatDeep = xs => {
 	const fn = (acc, item) =>
@@ -89,6 +124,8 @@ export const flatDeep = xs => {
 
 	return fold(fn)([])(xs)
 }
+
+export const flatMap = fn => xs => xs.flatMap(fn)
 
 export const find = fn => xs => xs.find(fn)
 
@@ -111,6 +148,8 @@ export const joinArray = join('')
 
 export const count = x => xs => xs.filter(_x => _x === x).length
 
+export const keys = xs => xs.keys()
+
 export const getArrayKeys = xs => [...xs.keys()]
 
 export const chunk = size => xs =>
@@ -119,19 +158,28 @@ export const chunk = size => xs =>
 		return acc
 	}, [])
 
+export const reverse = xs => xs.toReversed()
+
+export const sort = fn => xs => xs.toSorted(fn)
+
 export const uniq = xs => [...new Set(xs)]
 
 export const union = x => y => [...new Set([...x, ...y])]
 
-export const intersection = x => y => [...new Set(x)].filter(_x => new Set(y).has(_x))
+export const intersection = x => y =>
+	[...new Set(x)].filter(_x => new Set(y).has(_x))
 
-export const difference = x => y => a.filter(_x => !y.includes(_x))
+export const difference = x => y => x.filter(_x => !y.includes(_x))
 
 export const hasAllElems = (xs1, xs2) => xs1.every(x => xs2.includes(x))
 
 export const shuffle = xs => xs.sort(() => 0.5 - Math.random())
 
-export const toObject = xs => Object.fromEntries(xs)
+export const toObject = Object.fromEntries
+
+export const spread = x => [...x]
+
+export const shallowCopy = spread
 
 // Number functions
 export const inc = x => (x += 1)
@@ -140,11 +188,15 @@ export const dec = x => (x -= 1)
 
 export const add = x => y => x + y
 
-export const sub = x => y => x + y
+export const sub = x => y => x - y
 
 export const mul = x => y => x * y
 
-export const div = x => y => y / x
+export const div = x => y => x / y
+
+export const divBy = x => y => y / x
+
+export const subBy = x => y => y - x
 
 export const square = x => x * x
 
@@ -161,6 +213,8 @@ export const floor = Math.floor
 export const ceil = Math.ceil
 
 export const round = Math.round
+
+export const abs = Math.abs
 
 export const toFixed = arg => x => x.toFixed(arg)
 
@@ -211,6 +265,8 @@ export const truncateWords = arg => x => x.split(' ').splice(0, arg).join(' ')
 
 export const getLength = xs => xs.length
 
+export const length = getLength
+
 // predicates
 export const not =
 	fn =>
@@ -219,7 +275,8 @@ export const not =
 
 export const isNaN = x => Number.isNaN(x)
 
-export const isLetter = x => typeof x === 'string' && x.toLowerCase() !== x.toUpperCase()
+export const isLetter = x =>
+	typeof x === 'string' && x.toLowerCase() !== x.toUpperCase()
 
 export const isNumber = x => !isNaN(+x)
 
@@ -272,26 +329,44 @@ export const isMap = x => x instanceof Map
 // Objects
 export const pluck = x => obj => obj[x]
 
-export const toArray = Object.entries
+export const groupBy = fn => obj => Object.groupBy(obj, fn)
 
-export const toPairs = x => [...x]
+export const groupByProp = x => groupBy(pluck(x))
+
+export const toArray = Object.entries
 
 export const getKeys = Object.keys
 
 export const getValues = Object.values
 
 // Helpers
+export const flip = fn => x => y => fn(y)(x)
+
 export const setCountMap = xs =>
 	xs.reduce((map, x) => map.set(x, map.get(x) + 1 || 1), new Map())
 
-export const range =
-	(start = 1) =>
-	end =>
-		start === end ? [start] : [start, ...range(start + 1)(end)]
+// export const range =
+// 	(start = 1) =>
+// 	end =>
+// 		start === end ? [start] : [start, ...range(start + 1)(end)]
+
+export const range = pipe(Array, keys, map(inc))
+
+export function rangeGen(start = 0) {
+	return function* (end) {
+		for (let i = start; i <= end; i++) {
+			yield i
+		}
+	}
+}
 
 export const getAllPairs = xs => map(x => map(y => [x, y])(xs))(xs)
 
 export const getRandomNumber = (max = 1) => Math.floor(Math.random() * max + 1)
+
+export const when = p => f => x => p(x) ? f(x) : identity(x)
+
+export const ifElse = p => f => g => x => p(x) ? f(x) : g(x)
 
 export const nab = async url => await (await fetch(url)).json()
 
@@ -301,13 +376,13 @@ export const delay =
 	(...args) =>
 		setTimeout(fn, +ms ?? 0, ...args)
 
+export const nap = ms => new Promise(resolve => setTimeout(resolve, ms))
+
 export const removeNonLetters = pipe(split(''), filter(isLetter), join(''))
 
 export const removeNonNumbers = pipe(splitChars, keep(isNumber), joinArray)
 
 export const showPopover = x => x.showPopover()
-
-export const nap = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 export const select = (...xs) => xs.map(x => document.querySelector(x))
 

@@ -1,13 +1,22 @@
+import { log, pipe, spread, sum } from './index.js'
+
 const categories = new Map([
-  ['utils', 6],
-  ['debugging', 10],
-  ['array', 35],
-  ['number', 16],
+  ['utils', 11],
+  ['debugging', 12],
+  ['array', 47],
+  ['number', 19],
   ['string', 22],
   ['predicates', 27],
-  ['objects', 5],
-  ['helpers', 12],
+  ['objects', 6],
+  ['helpers', 16],
 ])
 
+const nejquery_philosophy = `
+  Get rid of the dots.
+  Curry the functions.
+  The data comes last.
+`
 
-console.log([...categories.values()].reduce((acc, item) => acc + item))
+pipe(spread, sum, log)(categories.values())
+
+// TODO: isPropEq (propEq)
