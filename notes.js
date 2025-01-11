@@ -1,14 +1,14 @@
 import { log, pipe, spread, sum } from './index.js'
 
 const categories = new Map([
-  ['utils', 11],
-  ['debugging', 12],
-  ['array', 47],
-  ['number', 19],
-  ['string', 22],
-  ['predicates', 27],
-  ['objects', 6],
-  ['helpers', 16],
+	['utils', 11],
+	['debugging', 12],
+	['array', 50],
+	['number', 19],
+	['string', 22],
+	['predicates', 27],
+	['objects', 6],
+	['helpers', 16],
 ])
 
 const nejquery_philosophy = `

@@ -8,12 +8,12 @@ export const apply2 = (acc, fn) => fn(acc)
 export const pipe =
 	(...fns) =>
 	x =>
-		fns.reduce(apply, x)
+		fns.reduce(apply2, x)
 
 export const compose =
 	(...fns) =>
 	x =>
-		fns.reduceRight(apply, x)
+		fns.reduceRight(apply2, x)
 
 export const both = f => g => x => [f(x), g(x)]
 
@@ -181,6 +181,22 @@ export const spread = x => [...x]
 
 export const shallowCopy = spread
 
+export const partition = fn => xs =>
+	xs.reduce(
+		(acc, x) =>
+			fn(x) ? [[...acc[0], x], [...acc[1]]] : [[...acc[0]], [...acc[1], x]],
+		[[], []]
+	)
+
+const doUnzip = ([xs, ys], [x, y]) => [
+	[...xs, x],
+	[...ys, y],
+]
+
+export const unzip = xs => xs.reduce(doUnzip, [[], []])
+
+export const intersperse = arg => xs => xs.flatMap(x => [x, arg]).slice(0, -1)
+
 // Number functions
 export const inc = x => (x += 1)
 
@@ -234,6 +250,8 @@ export const replace = regex => arg => x => x.replace(regex, arg)
 export const replaceAll = regex => arg => x => x.replaceAll(regex, arg)
 
 export const repeat = arg => x => x.repeat(arg)
+
+export const append = x => y => y + x
 
 export const trim = x => x.trim()
 
@@ -320,6 +338,8 @@ export const isEmptyArray = xs => Array.isArray(xs) && xs.length === 0
 
 export const isNotEmptyArray = xs => Array.isArray(xs) && xs.length > 0
 
+export const isNotEmptyString = str => str.length > 0
+
 export const isNullish = x => x == null
 
 export const isSet = x => x instanceof Set
@@ -381,6 +401,8 @@ export const nap = ms => new Promise(resolve => setTimeout(resolve, ms))
 export const removeNonLetters = pipe(split(''), filter(isLetter), join(''))
 
 export const removeNonNumbers = pipe(splitChars, keep(isNumber), joinArray)
+
+export const numWithCommas = n => new Intl.NumberFormat('en-US').format(n)
 
 export const showPopover = x => x.showPopover()
 
