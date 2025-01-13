@@ -348,6 +348,7 @@ export const isMap = x => x instanceof Map
 
 // Objects
 export const pluck = x => obj => obj[x]
+export const get = pluck
 
 export const groupBy = fn => obj => Object.groupBy(obj, fn)
 
