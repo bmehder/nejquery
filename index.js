@@ -2,6 +2,9 @@
 export const identity = x => x
 
 export const apply = fn => x => fn(x)
+export const thrush = apply
+
+export const apply2 = (acc, fn) => fn(acc)
 
 export const pipe =
 	(...fns) =>
