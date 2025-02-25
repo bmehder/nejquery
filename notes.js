@@ -8,7 +8,7 @@ const categories = new Map([
 	['string', 22],
 	['predicates', 27],
 	['objects', 6],
-	['helpers', 16],
+	['helpers', 19],
 ])
 
 const nejquery_philosophy = `
@@ -18,5 +18,3 @@ const nejquery_philosophy = `
 `
 
 pipe(spread, sum, log)(categories.values())
-
-// TODO: isPropEq (propEq)

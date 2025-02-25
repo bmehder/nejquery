@@ -3,8 +3,6 @@ export const identity = x => x
 
 export const apply = fn => x => fn(x)
 
-export const apply2 = (acc, fn) => fn(acc)
-
 export const pipe =
 	(...fns) =>
 	x =>
@@ -48,6 +46,7 @@ export const uncurry =
 
 // debugging functions
 export const tap = fn => x => (fn(x), identity(x))
+export const tee = tap
 
 export const log = console.log
 
@@ -381,6 +380,8 @@ export function rangeGen(start = 0) {
 	}
 }
 
+export const unfold = fn => x => fn(x) ? [fn(x)[0], ...unfold(fn)(fn(x)[1])] : []
+
 export const getAllPairs = xs => map(x => map(y => [x, y])(xs))(xs)
 
 export const getRandomNumber = (max = 1) => Math.floor(Math.random() * max + 1)
@@ -410,3 +411,45 @@ export const showPopover = x => x.showPopover()
 export const select = (...xs) => xs.map(x => document.querySelector(x))
 
 export const selectAll = (...xs) => xs.map(x => document.querySelectorAll(x))
+
+export const Option = (() => {
+	// Private functions to create Some and None
+	const Some = value => {
+		if (value === null || value === undefined) {
+			throw new Error('Some cannot hold null or undefined.')
+		}
+		return { type: 'Some', value }
+	}
+
+	const None = () => ({ type: 'None' })
+
+	// Helper functions
+	const isSome = option => option.type === 'Some'
+	const isNone = option => option.type === 'None'
+
+	const unwrap = option => {
+		if (isNone(option)) {
+			throw new Error('Cannot unwrap a None.')
+		}
+		return option.value
+	}
+
+	const unwrapOr = (option, defaultValue) =>
+		isSome(option) ? option.value : defaultValue
+
+	const map = (option, fn) => (isSome(option) ? Some(fn(option.value)) : None())
+
+	const flatMap = (option, fn) => (isSome(option) ? fn(option.value) : None())
+
+	// Expose the API
+	return {
+		Some,
+		None,
+		isSome,
+		isNone,
+		unwrap,
+		unwrapOr,
+		map,
+		flatMap,
+	}
+})()
