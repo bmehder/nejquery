@@ -234,6 +234,8 @@ export const round = Math.round
 
 export const abs = Math.abs
 
+export const sqrt = Math.sqrt
+
 export const toFixed = arg => x => x.toFixed(arg)
 
 export const toLocaleString = arg => x => x.toLocaleString(arg)
@@ -347,6 +349,10 @@ export const isNullish = x => x == null
 export const isSet = x => x instanceof Set
 
 export const isMap = x => x instanceof Map
+
+export const or = (a, b) => a || b
+
+export const and = (a, b) => a && b
 
 // Objects
 export const pluck = x => obj => obj[x]
