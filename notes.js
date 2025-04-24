@@ -1,10 +1,10 @@
 import { log, pipe, spread, sum } from './index.js'
 
 const categories = new Map([
-	['utils', 11],
+	['utils', 12],
 	['debugging', 12],
 	['array', 50],
-	['number', 20],
+	['number', 21],
 	['string', 22],
 	['predicates', 29],
 	['objects', 6],

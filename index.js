@@ -23,6 +23,8 @@ export const applyMap =
 	x =>
 		fns.map(fn => fn(x))
 
+export const applyToIndex = fn => (_, i) => fn(i)
+
 export const many = applyMap
 
 export function curry(fn) {
@@ -215,6 +217,8 @@ export const div = x => y => x / y
 export const divBy = x => y => y / x
 
 export const subBy = x => y => y - x
+
+export const mod = x => y => x % y
 
 export const square = x => x * x
 
