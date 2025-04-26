@@ -27,6 +27,22 @@ export const applyToIndex = fn => (_, i) => fn(i)
 
 export const many = applyMap
 
+export const composer = (state, ...fns) => {
+	const reducer = (obj, fn) => ({
+		...obj,
+		...fn(obj, newState => composer(newState, ...fns)),
+	})
+	return fns.reduce(reducer, state)
+}
+
+export const withUpdater = (state, composer) => ({
+	updateProp: (prop, value) =>
+		composer({
+			...state,
+			[prop]: value,
+		}),
+})
+
 export function curry(fn) {
 	return function curried(...args) {
 		if (args.length >= fn.length) {
