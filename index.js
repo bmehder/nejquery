@@ -27,7 +27,7 @@ export const applyToIndex = fn => (_, i) => fn(i)
 
 export const many = applyMap
 
-export const composer = (state, ...fns) => {
+export const decorate = (state, ...fns) => {
 	const reducer = (obj, fn) => ({
 		...obj,
 		...fn(obj, newState => composer(newState, ...fns)),
