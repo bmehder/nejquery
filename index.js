@@ -43,6 +43,22 @@ export const withUpdater = (state, composer) => ({
 		}),
 })
 
+export const withLogger = obj => ({
+	log: () => {
+		console.log('Object:')
+		Object.getOwnPropertyNames(obj).forEach(prop => {
+			const descriptor = Object.getOwnPropertyDescriptor(obj, prop)
+			if (typeof obj[prop] === 'function') {
+				console.log(`${prop}:`, obj[prop].toString())
+			} else {
+				console.log(`${prop}:`, obj[prop])
+			}
+		})
+
+		return obj
+	},
+})
+
 export function curry(fn) {
 	return function curried(...args) {
 		if (args.length >= fn.length) {
