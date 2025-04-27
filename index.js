@@ -30,7 +30,7 @@ export const many = applyMap
 export const decorate = (state, ...fns) => {
 	const reducer = (obj, fn) => ({
 		...obj,
-		...fn(obj, newState => composer(newState, ...fns)),
+		...fn(obj, newState => decorate(newState, ...fns)),
 	})
 	return fns.reduce(reducer, state)
 }
