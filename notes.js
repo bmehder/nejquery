@@ -8,7 +8,7 @@ const categories = new Map([
 	['string', 22],
 	['predicates', 29],
 	['objects', 6],
-	['helpers', 22],
+	['helpers', 24],
 ])
 
 const nejquery_philosophy = `

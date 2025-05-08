@@ -496,4 +496,13 @@ export const matchStrict = (value, handlers) => {
 	return handlers[tag](value)
 }
 
+export const Maybe = createADT({
+	Just: ['value'],
+	Nothing: [],
+})
+
+export const Result = createADT({
+	Ok: ['value'],
+	Err: ['message'],
+})
 
