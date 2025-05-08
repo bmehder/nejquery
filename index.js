@@ -457,44 +457,43 @@ export const select = (...xs) => xs.map(x => document.querySelector(x))
 
 export const selectAll = (...xs) => xs.map(x => document.querySelectorAll(x))
 
-export const Option = (() => {
-	// Private functions to create Some and None
-	const Some = value => {
-		if (value === null || value === undefined) {
-			throw new Error('Some cannot hold null or undefined.')
-		}
-		return { type: 'Some', value }
-	}
+export const createADT = spec =>
+	Object.fromEntries(
+		Object.entries(spec).map(([tag, fieldNames]) => [
+			tag,
+			(...args) => {
+				if (args.length !== fieldNames.length)
+					throw new Error(`Expected ${fieldNames.length} arguments for ${tag}`)
 
-	const None = () => ({ type: 'None' })
+				const fields = Object.fromEntries(
+					fieldNames.map((name, i) => [name, args[i]])
+				)
 
-	// Helper functions
-	const isSome = option => option.type === 'Some'
-	const isNone = option => option.type === 'None'
+				return { tag, ...fields }
+			},
+		])
+	)
 
-	const unwrap = option => {
-		if (isNone(option)) {
-			throw new Error('Cannot unwrap a None.')
-		}
-		return option.value
-	}
+export const match = (value, handlers) => {
+	const handler = handlers[value.tag] || handlers._
+	if (!handler)
+		throw new Error(`No match for tag: ${value.tag}, and no fallback (_) provided`)
+	return handler(value)
+}
 
-	const unwrapOr = (option, defaultValue) =>
-		isSome(option) ? option.value : defaultValue
+export const matchStrict = (value, handlers) => {
+	const { tag } = value
 
-	const map = (option, fn) => (isSome(option) ? Some(fn(option.value)) : None())
+	if (!handlers.hasOwnProperty(tag))
+		throw new Error(`Missing handler for tag: ${tag}`)
 
-	const flatMap = (option, fn) => (isSome(option) ? fn(option.value) : None())
+	const handledTags = Object.keys(handlers)
+	if (handledTags.includes('_'))
+		throw new Error(
+			`matchStrict does not support fallback (_) — handle all variants explicitly`
+		)
 
-	// Expose the API
-	return {
-		Some,
-		None,
-		isSome,
-		isNone,
-		unwrap,
-		unwrapOr,
-		map,
-		flatMap,
-	}
-})()
+	return handlers[tag](value)
+}
+
+
