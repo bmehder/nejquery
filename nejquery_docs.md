@@ -9,6 +9,7 @@
 - [Predicates](#predicates)
 - [Helpers](#helpers)
 
+
 ## Array functions
 
 ### `at`
@@ -797,617 +798,6 @@ unzip([[1, 'a'], [2, 'b'], [3, 'c']]) // => [[1, 2, 3], ['a', 'b', 'c']]
 ```
 
 ---
-
-## Helpers
-
-### `flip`
-
-**Description:**  
-Reverses the order of the first two arguments of a curried binary function.
-
-```js
-export const flip = fn => x => y => fn(y)(x)
-```
-
-```js
-const subtract = a => b => a - b
-flip(subtract)(1)(5) // => 4
-```
-
----
-
-### `setCountMap`
-
-**Description:**  
-Creates a `Map` counting the occurrences of each item in the array.
-
-```js
-export const setCountMap = xs =>
-  xs.reduce((map, x) => map.set(x, map.get(x) + 1 || 1), new Map())
-```
-
-```js
-[...setCountMap(['a', 'b', 'a']).entries()] // => [['a', 2], ['b', 1]]
-```
-
----
-
-### `range`
-
-**Description:**  
-Creates an array of numbers from `start` to `end`, inclusive.
-
-```js
-export const range = start => end =>
-	Array.from({ length: end - start + 1 }, (_, i) => start + i)
-```
-
-```js
-range(2)(4) // => [2, 3, 4]
-```
-
----
-
-### `rangeGen`
-
-**Description:**  
-Creates a generator that yields numbers from `start` to `end`, inclusive.
-
-```js
-export function rangeGen(start = 0) {
-	return function* (end) {
-		for (let i = start; i <= end; i++) {
-			yield i
-		}
-	}
-}
-```
-
-```js
-[...rangeGen(1)(3)] // => [1, 2, 3]
-```
-
----
-
-### `unfold`
-
-**Description:**  
-Generates a list by recursively applying a function until it returns false.
-
-```js
-export const unfold = fn => x => fn(x) ? [fn(x)[0], ...unfold(fn)(fn(x)[1])] : []
-```
-
-```js
-unfold(n => n > 0 ? [n, n - 1] : false)(3) // => [3, 2, 1]
-```
-
----
-
-### `getAllPairs`
-
-**Description:**  
-Generates all ordered pairs from an array.
-
-```js
-export const getAllPairs = xs => map(x => map(y => [x, y])(xs))(xs)
-```
-
-```js
-getAllPairs([1, 2]) // => [[[1,1],[1,2]],[[2,1],[2,2]]]
-```
-
----
-
-### `getRandomNumber`
-
-**Description:**  
-Returns a random integer between 1 and `max`.
-
-```js
-export const getRandomNumber = (max = 1) => Math.floor(Math.random() * max + 1)
-```
-
-```js
-getRandomNumber(5) // => random number from 1 to 5
-```
-
----
-
-### `when`
-
-**Description:**  
-Applies a function if a predicate is true.
-
-```js
-export const when = p => f => x => p(x) ? f(x) : identity(x)
-```
-
-```js
-when(x => x > 5)(x => x * 2)(6) // => 12
-```
-
----
-
-### `ifElse`
-
-**Description:**  
-Chooses between two functions based on a predicate.
-
-```js
-export const ifElse = p => f => g => x => p(x) ? f(x) : g(x)
-```
-
-```js
-ifElse(x => x > 0)(x => 'yes')(x => 'no')(1) // => 'yes'
-```
-
----
-
-### `nab`
-
-**Description:**  
-Fetches and parses JSON from a URL.
-
-```js
-export const nab = async url => await (await fetch(url)).json()
-```
-
-```js
-// nab('/api/data') // => returns parsed JSON
-```
-
----
-
-### `delay`
-
-**Description:**  
-Delays invocation of a function.
-
-```js
-export const delay =
-	ms =>
-	fn =>
-	(...args) =>
-		setTimeout(fn, +ms ?? 0, ...args)
-```
-
-```js
-delay(1000)(console.log)('hi')
-```
-
----
-
-### `nap`
-
-**Description:**  
-Returns a promise that resolves after `ms` milliseconds.
-
-```js
-export const nap = ms => new Promise(resolve => setTimeout(resolve, ms))
-```
-
-```js
-await nap(100)
-```
-
----
-
-### `removeNonLetters`
-
-**Description:**  
-Removes all non-letter characters from a string.
-
-```js
-export const removeNonLetters = pipe(split(''), filter(isLetter), join(''))
-```
-
-```js
-removeNonLetters('a1!b2') // => 'ab'
-```
-
----
-
-### `removeNonNumbers`
-
-**Description:**  
-Removes all non-numeric characters from a string.
-
-```js
-export const removeNonNumbers = pipe(splitChars, keep(isNumber), joinArray)
-```
-
-```js
-removeNonNumbers('a1b2') // => '12'
-```
-
----
-
-### `numWithCommas`
-
-**Description:**  
-Formats a number with commas as thousands separators.
-
-```js
-export const numWithCommas = n => new Intl.NumberFormat('en-US').format(n)
-```
-
-```js
-numWithCommas(1234567) // => '1,234,567'
-```
-
----
-
-### `showPopover`
-
-**Description:**  
-Triggers the `showPopover()` method on an element.
-
-```js
-export const showPopover = x => x.showPopover()
-```
-
-```js
-// showPopover(document.querySelector('#my-el'))
-```
-
----
-
-### `select`
-
-**Description:**  
-Selects DOM elements by query selectors.
-
-```js
-export const select = (...xs) => xs.map(x => document.querySelector(x))
-```
-
-```js
-select('#a', '#b') // => [HTMLElement, HTMLElement]
-```
-
----
-
-### `selectAll`
-
-**Description:**  
-Selects all DOM elements matching query selectors.
-
-```js
-export const selectAll = (...xs) => xs.map(x => document.querySelectorAll(x))
-```
-
-```js
-selectAll('div') // => [NodeList]
-```
-
----
-
-### `createADT`
-
-**Description:**  
-Creates an algebraic data type (ADT) constructor.
-
-```js
-export const createADT = spec =>
-	Object.fromEntries(
-		Object.entries(spec).map(([tag, fieldNames]) => [
-			tag,
-			(...args) => {
-				if (args.length !== fieldNames.length)
-					throw new Error(`Expected ${fieldNames.length} arguments for ${tag}`)
-
-				const fields = Object.fromEntries(
-					fieldNames.map((name, i) => [name, args[i]])
-				)
-
-				return { tag, ...fields }
-			},
-		])
-	)
-```
-
-```js
-const Option = createADT({ Some: ['value'], None: [] })
-Option.Some(1) // => { tag: 'Some', value: 1 }
-```
-
----
-
-### `match`
-
-**Description:**  
-Pattern matches an ADT with fallback support.
-
-```js
-export const match = (value, handlers) => {
-	const handler = handlers[value.tag] || handlers._
-	if (!handler)
-		throw new Error(`No match for tag: ${value.tag}, and no fallback (_) provided`)
-	return handler(value)
-}
-```
-
-```js
-match(Result.Ok(1), { Ok: x => x.value }) // => 1
-```
-
----
-
-### `matchStrict`
-
-**Description:**  
-Strict version of `match`; all variants must be handled explicitly.
-
-```js
-export const matchStrict = (value, handlers) => {
-	const { tag } = value
-
-	if (!handlers.hasOwnProperty(tag))
-		throw new Error(`Missing handler for tag: ${tag}`)
-
-	const handledTags = Object.keys(handlers)
-	if (handledTags.includes('_'))
-		throw new Error(
-			`matchStrict does not support fallback (_) — handle all variants explicitly`
-		)
-
-	return handlers[tag](value)
-}
-```
-
-```js
-matchStrict(Result.Err('fail'), { Err: x => x.message }) // => 'fail'
-```
-
----
-
-### `Maybe`
-
-**Description:**  
-An ADT with `Just(value)` and `Nothing()` variants.
-
-```js
-export const Maybe = createADT({
-	Just: ['value'],
-	Nothing: [],
-})
-```
-
-```js
-Maybe.Just(5) // => { tag: 'Just', value: 5 }
-```
-
----
-
-### `Result`
-
-**Description:**  
-An ADT with `Ok(value)` and `Err(message)` variants.
-
-```js
-export const Result = createADT({
-	Ok: ['value'],
-	Err: ['message'],
-})
-```
-
-```js
-Result.Err('Oops') // => { tag: 'Err', message: 'Oops' }
-```
-
----
-
-### `mapResult`
-
-**Description:**  
-Maps the value inside `Ok`, passes through `Err`.
-
-```js
-export const mapResult = (fn, result) =>
-	result.tag === 'Ok' ? Result.Ok(fn(result.value)) : result
-```
-
-```js
-mapResult(x => x + 1, Result.Ok(1)) // => Ok(2)
-```
-
----
-
-### `mapMaybe`
-
-**Description:**  
-Maps the value inside `Just`, passes through `Nothing`.
-
-```js
-export const mapMaybe = (fn, maybe) =>
-	maybe.tag === 'Just' ? Maybe.Just(fn(maybe.value)) : maybe
-```
-
-```js
-mapMaybe(x => x * 2, Maybe.Just(2)) // => Just(4)
-```
-
----
-
-### `flatMapResult`
-
-**Description:**  
-Applies a function to an `Ok` that returns another `Result`.
-
-```js
-export const flatMapResult = (fn, result) =>
-	result.tag === 'Ok' ? fn(result.value) : result
-```
-
-```js
-flatMapResult(x => Result.Ok(x * 2), Result.Ok(2)) // => Ok(4)
-```
-
----
-
-### `flatMapMaybe`
-
-**Description:**  
-Applies a function to a `Just` that returns another `Maybe`.
-
-```js
-export const flatMapMaybe = (fn, maybe) =>
-	maybe.tag === 'Just' ? fn(maybe.value) : maybe
-```
-
-```js
-flatMapMaybe(x => Maybe.Just(x * 2), Maybe.Just(2)) // => Just(4)
-```
-
----
-
-### `unwrap`
-
-**Description:**  
-Returns the value inside `Just` or `Ok`, or fallback.
-
-```js
-export const unwrap = (adt, fallback) => {
-	const { tag } = adt
-	if (tag === 'Just' || tag === 'Ok') return adt.value
-	if (arguments.length === 2) return fallback
-	throw new Error(`Cannot unwrap ${tag}`)
-}
-```
-
-```js
-unwrap(Maybe.Just(2)) // => 2
-```
-
----
-
-### `defaultTo`
-
-**Description:**  
-Returns value inside `Just`/`Ok` or fallback.
-
-```js
-export const defaultTo = (fallback, adt) =>
-	adt.tag === 'Just' || adt.tag === 'Ok' ? adt.value : fallback
-```
-
-```js
-defaultTo(0, Maybe.Nothing()) // => 0
-```
-
----
-
-### `isJust`
-
-**Description:**  
-Checks if the `Maybe` is a `Just`.
-
-```js
-export const isJust = maybe => maybe.tag === 'Just'
-```
-
-```js
-isJust(Maybe.Just(1)) // => true
-```
-
----
-
-### `isNothing`
-
-**Description:**  
-Checks if the `Maybe` is `Nothing`.
-
-```js
-export const isNothing = maybe => maybe.tag === 'Nothing'
-```
-
-```js
-isNothing(Maybe.Nothing()) // => true
-```
-
----
-
-### `isOk`
-
-**Description:**  
-Checks if the `Result` is `Ok`.
-
-```js
-export const isOk = result => result.tag === 'Ok'
-```
-
-```js
-isOk(Result.Ok(1)) // => true
-```
-
----
-
-### `isErr`
-
-**Description:**  
-Checks if the `Result` is `Err`.
-
-```js
-export const isErr = result => result.tag === 'Err'
-```
-
-```js
-isErr(Result.Err('fail')) // => true
-```
-
----
-
-### `foldMaybe`
-
-**Description:**  
-Applies a handler for `Nothing` or `Just`.
-
-```js
-export const foldMaybe = (onNothing, onJust, maybe) =>
-	maybe.tag === 'Just' ? onJust(maybe.value) : onNothing()
-```
-
-```js
-foldMaybe(() => 'none', x => x * 2, Maybe.Just(3)) // => 6
-```
-
----
-
-### `foldResult`
-
-**Description:**  
-Applies a handler for `Err` or `Ok`.
-
-```js
-export const foldResult = (onErr, onOk, result) =>
-	result.tag === 'Ok' ? onOk(result.value) : onErr(result.message)
-```
-
-```js
-foldResult(x => `fail: ${x}`, x => x + 1, Result.Ok(2)) // => 3
-```
-
----
-
-### `tryCatch`
-
-**Description:**  
-Wraps a function call in a `Result`.
-
-```js
-export const tryCatch = fn => arg => {
-	try {
-		return Result.Ok(fn(arg))
-	} catch (err) {
-		return Result.Err(err.message || 'Unknown error')
-	}
-}
-```
-
-```js
-tryCatch(JSON.parse)('{"a":1}') // => Ok({ a: 1 })
-```
 
 ## Number functions
 
@@ -3123,5 +2513,614 @@ or(false, true) // => true
 
 ---
 
+## Helpers
 
+### `flip`
+
+**Description:**  
+Reverses the order of the first two arguments of a curried binary function.
+
+```js
+export const flip = fn => x => y => fn(y)(x)
+```
+
+```js
+const subtract = a => b => a - b
+flip(subtract)(1)(5) // => 4
+```
+
+---
+
+### `setCountMap`
+
+**Description:**  
+Creates a `Map` counting the occurrences of each item in the array.
+
+```js
+export const setCountMap = xs =>
+  xs.reduce((map, x) => map.set(x, map.get(x) + 1 || 1), new Map())
+```
+
+```js
+[...setCountMap(['a', 'b', 'a']).entries()] // => [['a', 2], ['b', 1]]
+```
+
+---
+
+### `range`
+
+**Description:**  
+Creates an array of numbers from `start` to `end`, inclusive.
+
+```js
+export const range = start => end =>
+	Array.from({ length: end - start + 1 }, (_, i) => start + i)
+```
+
+```js
+range(2)(4) // => [2, 3, 4]
+```
+
+---
+
+### `rangeGen`
+
+**Description:**  
+Creates a generator that yields numbers from `start` to `end`, inclusive.
+
+```js
+export function rangeGen(start = 0) {
+	return function* (end) {
+		for (let i = start; i <= end; i++) {
+			yield i
+		}
+	}
+}
+```
+
+```js
+[...rangeGen(1)(3)] // => [1, 2, 3]
+```
+
+---
+
+### `unfold`
+
+**Description:**  
+Generates a list by recursively applying a function until it returns false.
+
+```js
+export const unfold = fn => x => fn(x) ? [fn(x)[0], ...unfold(fn)(fn(x)[1])] : []
+```
+
+```js
+unfold(n => n > 0 ? [n, n - 1] : false)(3) // => [3, 2, 1]
+```
+
+---
+
+### `getAllPairs`
+
+**Description:**  
+Generates all ordered pairs from an array.
+
+```js
+export const getAllPairs = xs => map(x => map(y => [x, y])(xs))(xs)
+```
+
+```js
+getAllPairs([1, 2]) // => [[[1,1],[1,2]],[[2,1],[2,2]]]
+```
+
+---
+
+### `getRandomNumber`
+
+**Description:**  
+Returns a random integer between 1 and `max`.
+
+```js
+export const getRandomNumber = (max = 1) => Math.floor(Math.random() * max + 1)
+```
+
+```js
+getRandomNumber(5) // => random number from 1 to 5
+```
+
+---
+
+### `when`
+
+**Description:**  
+Applies a function if a predicate is true.
+
+```js
+export const when = p => f => x => p(x) ? f(x) : identity(x)
+```
+
+```js
+when(x => x > 5)(x => x * 2)(6) // => 12
+```
+
+---
+
+### `ifElse`
+
+**Description:**  
+Chooses between two functions based on a predicate.
+
+```js
+export const ifElse = p => f => g => x => p(x) ? f(x) : g(x)
+```
+
+```js
+ifElse(x => x > 0)(x => 'yes')(x => 'no')(1) // => 'yes'
+```
+
+---
+
+### `nab`
+
+**Description:**  
+Fetches and parses JSON from a URL.
+
+```js
+export const nab = async url => await (await fetch(url)).json()
+```
+
+```js
+// nab('/api/data') // => returns parsed JSON
+```
+
+---
+
+### `delay`
+
+**Description:**  
+Delays invocation of a function.
+
+```js
+export const delay =
+	ms =>
+	fn =>
+	(...args) =>
+		setTimeout(fn, +ms ?? 0, ...args)
+```
+
+```js
+delay(1000)(console.log)('hi')
+```
+
+---
+
+### `nap`
+
+**Description:**  
+Returns a promise that resolves after `ms` milliseconds.
+
+```js
+export const nap = ms => new Promise(resolve => setTimeout(resolve, ms))
+```
+
+```js
+await nap(100)
+```
+
+---
+
+### `removeNonLetters`
+
+**Description:**  
+Removes all non-letter characters from a string.
+
+```js
+export const removeNonLetters = pipe(split(''), filter(isLetter), join(''))
+```
+
+```js
+removeNonLetters('a1!b2') // => 'ab'
+```
+
+---
+
+### `removeNonNumbers`
+
+**Description:**  
+Removes all non-numeric characters from a string.
+
+```js
+export const removeNonNumbers = pipe(splitChars, keep(isNumber), joinArray)
+```
+
+```js
+removeNonNumbers('a1b2') // => '12'
+```
+
+---
+
+### `numWithCommas`
+
+**Description:**  
+Formats a number with commas as thousands separators.
+
+```js
+export const numWithCommas = n => new Intl.NumberFormat('en-US').format(n)
+```
+
+```js
+numWithCommas(1234567) // => '1,234,567'
+```
+
+---
+
+### `showPopover`
+
+**Description:**  
+Triggers the `showPopover()` method on an element.
+
+```js
+export const showPopover = x => x.showPopover()
+```
+
+```js
+// showPopover(document.querySelector('#my-el'))
+```
+
+---
+
+### `select`
+
+**Description:**  
+Selects DOM elements by query selectors.
+
+```js
+export const select = (...xs) => xs.map(x => document.querySelector(x))
+```
+
+```js
+select('#a', '#b') // => [HTMLElement, HTMLElement]
+```
+
+---
+
+### `selectAll`
+
+**Description:**  
+Selects all DOM elements matching query selectors.
+
+```js
+export const selectAll = (...xs) => xs.map(x => document.querySelectorAll(x))
+```
+
+```js
+selectAll('div') // => [NodeList]
+```
+
+---
+
+### `createADT`
+
+**Description:**  
+Creates an algebraic data type (ADT) constructor.
+
+```js
+export const createADT = spec =>
+	Object.fromEntries(
+		Object.entries(spec).map(([tag, fieldNames]) => [
+			tag,
+			(...args) => {
+				if (args.length !== fieldNames.length)
+					throw new Error(`Expected ${fieldNames.length} arguments for ${tag}`)
+
+				const fields = Object.fromEntries(
+					fieldNames.map((name, i) => [name, args[i]])
+				)
+
+				return { tag, ...fields }
+			},
+		])
+	)
+```
+
+```js
+const Option = createADT({ Some: ['value'], None: [] })
+Option.Some(1) // => { tag: 'Some', value: 1 }
+```
+
+---
+
+### `match`
+
+**Description:**  
+Pattern matches an ADT with fallback support.
+
+```js
+export const match = (value, handlers) => {
+	const handler = handlers[value.tag] || handlers._
+	if (!handler)
+		throw new Error(`No match for tag: ${value.tag}, and no fallback (_) provided`)
+	return handler(value)
+}
+```
+
+```js
+match(Result.Ok(1), { Ok: x => x.value }) // => 1
+```
+
+---
+
+### `matchStrict`
+
+**Description:**  
+Strict version of `match`; all variants must be handled explicitly.
+
+```js
+export const matchStrict = (value, handlers) => {
+	const { tag } = value
+
+	if (!handlers.hasOwnProperty(tag))
+		throw new Error(`Missing handler for tag: ${tag}`)
+
+	const handledTags = Object.keys(handlers)
+	if (handledTags.includes('_'))
+		throw new Error(
+			`matchStrict does not support fallback (_) — handle all variants explicitly`
+		)
+
+	return handlers[tag](value)
+}
+```
+
+```js
+matchStrict(Result.Err('fail'), { Err: x => x.message }) // => 'fail'
+```
+
+---
+
+### `Maybe`
+
+**Description:**  
+An ADT with `Just(value)` and `Nothing()` variants.
+
+```js
+export const Maybe = createADT({
+	Just: ['value'],
+	Nothing: [],
+})
+```
+
+```js
+Maybe.Just(5) // => { tag: 'Just', value: 5 }
+```
+
+---
+
+### `Result`
+
+**Description:**  
+An ADT with `Ok(value)` and `Err(message)` variants.
+
+```js
+export const Result = createADT({
+	Ok: ['value'],
+	Err: ['message'],
+})
+```
+
+```js
+Result.Err('Oops') // => { tag: 'Err', message: 'Oops' }
+```
+
+---
+
+### `mapResult`
+
+**Description:**  
+Maps the value inside `Ok`, passes through `Err`.
+
+```js
+export const mapResult = (fn, result) =>
+	result.tag === 'Ok' ? Result.Ok(fn(result.value)) : result
+```
+
+```js
+mapResult(x => x + 1, Result.Ok(1)) // => Ok(2)
+```
+
+---
+
+### `mapMaybe`
+
+**Description:**  
+Maps the value inside `Just`, passes through `Nothing`.
+
+```js
+export const mapMaybe = (fn, maybe) =>
+	maybe.tag === 'Just' ? Maybe.Just(fn(maybe.value)) : maybe
+```
+
+```js
+mapMaybe(x => x * 2, Maybe.Just(2)) // => Just(4)
+```
+
+---
+
+### `flatMapResult`
+
+**Description:**  
+Applies a function to an `Ok` that returns another `Result`.
+
+```js
+export const flatMapResult = (fn, result) =>
+	result.tag === 'Ok' ? fn(result.value) : result
+```
+
+```js
+flatMapResult(x => Result.Ok(x * 2), Result.Ok(2)) // => Ok(4)
+```
+
+---
+
+### `flatMapMaybe`
+
+**Description:**  
+Applies a function to a `Just` that returns another `Maybe`.
+
+```js
+export const flatMapMaybe = (fn, maybe) =>
+	maybe.tag === 'Just' ? fn(maybe.value) : maybe
+```
+
+```js
+flatMapMaybe(x => Maybe.Just(x * 2), Maybe.Just(2)) // => Just(4)
+```
+
+---
+
+### `unwrap`
+
+**Description:**  
+Returns the value inside `Just` or `Ok`, or fallback.
+
+```js
+export const unwrap = (adt, fallback) => {
+	const { tag } = adt
+	if (tag === 'Just' || tag === 'Ok') return adt.value
+	if (arguments.length === 2) return fallback
+	throw new Error(`Cannot unwrap ${tag}`)
+}
+```
+
+```js
+unwrap(Maybe.Just(2)) // => 2
+```
+
+---
+
+### `defaultTo`
+
+**Description:**  
+Returns value inside `Just`/`Ok` or fallback.
+
+```js
+export const defaultTo = (fallback, adt) =>
+	adt.tag === 'Just' || adt.tag === 'Ok' ? adt.value : fallback
+```
+
+```js
+defaultTo(0, Maybe.Nothing()) // => 0
+```
+
+---
+
+### `isJust`
+
+**Description:**  
+Checks if the `Maybe` is a `Just`.
+
+```js
+export const isJust = maybe => maybe.tag === 'Just'
+```
+
+```js
+isJust(Maybe.Just(1)) // => true
+```
+
+---
+
+### `isNothing`
+
+**Description:**  
+Checks if the `Maybe` is `Nothing`.
+
+```js
+export const isNothing = maybe => maybe.tag === 'Nothing'
+```
+
+```js
+isNothing(Maybe.Nothing()) // => true
+```
+
+---
+
+### `isOk`
+
+**Description:**  
+Checks if the `Result` is `Ok`.
+
+```js
+export const isOk = result => result.tag === 'Ok'
+```
+
+```js
+isOk(Result.Ok(1)) // => true
+```
+
+---
+
+### `isErr`
+
+**Description:**  
+Checks if the `Result` is `Err`.
+
+```js
+export const isErr = result => result.tag === 'Err'
+```
+
+```js
+isErr(Result.Err('fail')) // => true
+```
+
+---
+
+### `foldMaybe`
+
+**Description:**  
+Applies a handler for `Nothing` or `Just`.
+
+```js
+export const foldMaybe = (onNothing, onJust, maybe) =>
+	maybe.tag === 'Just' ? onJust(maybe.value) : onNothing()
+```
+
+```js
+foldMaybe(() => 'none', x => x * 2, Maybe.Just(3)) // => 6
+```
+
+---
+
+### `foldResult`
+
+**Description:**  
+Applies a handler for `Err` or `Ok`.
+
+```js
+export const foldResult = (onErr, onOk, result) =>
+	result.tag === 'Ok' ? onOk(result.value) : onErr(result.message)
+```
+
+```js
+foldResult(x => `fail: ${x}`, x => x + 1, Result.Ok(2)) // => 3
+```
+
+---
+
+### `tryCatch`
+
+**Description:**  
+Wraps a function call in a `Result`.
+
+```js
+export const tryCatch = fn => arg => {
+	try {
+		return Result.Ok(fn(arg))
+	} catch (err) {
+		return Result.Err(err.message || 'Unknown error')
+	}
+}
+```
+
+```js
+tryCatch(JSON.parse)('{"a":1}') // => Ok({ a: 1 })
+```
 
