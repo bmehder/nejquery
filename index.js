@@ -4,38 +4,34 @@ export const identity = x => x
 export const apply = fn => x => fn(x)
 export const thrush = apply
 
-export const apply2 = (acc, fn) => fn(acc)
+export const applyReducer = (acc, fn) => fn(acc)
 
 export const pipe =
 	(...fns) =>
 	x =>
-		fns.reduce(apply2, x)
+		fns.reduce(applyReducer, x)
 
 export const compose =
 	(...fns) =>
 	x =>
-		fns.reduceRight(apply2, x)
+		fns.reduceRight(applyReducer, x)
 
-export const both = f => g => x => [f(x), g(x)]
-
-export const applyMap =
+export const mapAll =
 	(...fns) =>
 	x =>
 		fns.map(fn => fn(x))
 
 export const applyToIndex = fn => (_, i) => fn(i)
 
-export const many = applyMap
-
-export const decorate = (state, ...fns) => {
+export const composeState = (state, ...fns) => {
 	const reducer = (obj, fn) => ({
 		...obj,
-		...fn(obj, newState => decorate(newState, ...fns)),
+		...fn(obj, newState => composeState(newState, ...fns)),
 	})
 	return fns.reduce(reducer, state)
 }
 
-export const withUpdater = (state, composer) => ({
+export const withSet = (state, composer) => ({
 	updateProp: (prop, value) =>
 		composer({
 			...state,
@@ -154,9 +150,9 @@ export const flat = x => xs => xs.flat(x)
 
 export const flatten = xs => xs.flat(1)
 
-export const flatDeep = xs => {
+export const flattenAll = xs => {
 	const fn = (acc, item) =>
-		Array.isArray(item) ? [...acc, ...flatDeep(item)] : [...acc, item]
+		Array.isArray(item) ? [...acc, ...flattenAll(item)] : [...acc, item]
 
 	return fold(fn)([])(xs)
 }
@@ -187,6 +183,8 @@ export const count = x => xs => xs.filter(_x => _x === x).length
 export const keys = xs => xs.keys()
 
 export const getArrayKeys = xs => [...xs.keys()]
+
+export const fill = value => start => end => xs => [...xs].fill(value, start, end)
 
 export const chunk = size => xs =>
 	xs.reduce((acc, _, i, xs) => {
@@ -228,6 +226,8 @@ const doUnzip = ([xs, ys], [x, y]) => [
 	[...xs, x],
 	[...ys, y],
 ]
+
+export const zip = a => b => a.map((x, i) => [x, b[i]])
 
 export const unzip = xs => xs.reduce(doUnzip, [[], []])
 
@@ -313,7 +313,7 @@ export const toLocaleLowerCase = x => x.toLocaleLowerCase()
 
 export const toLocaleUpperCase = x => x.toLocaleUpperCase()
 
-export const reverseWord = x => x.toReversed().join('')
+export const reverseChars = x => x.toReversed().join('')
 
 export const padStart = len => arg => x => x.padStart(len, arg)
 
@@ -392,7 +392,7 @@ export const and = (a, b) => a && b
 
 // Objects
 export const pluck = x => obj => obj[x]
-export const get = pluck
+export const getProp = pluck
 
 export const groupBy = fn => obj => Object.groupBy(obj, fn)
 
@@ -410,12 +410,8 @@ export const flip = fn => x => y => fn(y)(x)
 export const setCountMap = xs =>
 	xs.reduce((map, x) => map.set(x, map.get(x) + 1 || 1), new Map())
 
-// export const range =
-// 	(start = 1) =>
-// 	end =>
-// 		start === end ? [start] : [start, ...range(start + 1)(end)]
-
-export const range = pipe(Array, keys, map(inc))
+export const range = start => end =>
+	Array.from({ length: end - start + 1 }, (_, i) => start + i)
 
 export function rangeGen(start = 0) {
 	return function* (end) {
@@ -548,3 +544,10 @@ export const foldMaybe = (onNothing, onJust, maybe) =>
 export const foldResult = (onErr, onOk, result) =>
 	result.tag === 'Ok' ? onOk(result.value) : onErr(result.message)
 
+export const tryCatch = fn => arg => {
+	try {
+		return Result.Ok(fn(arg))
+	} catch (err) {
+		return Result.Err(err.message || 'Unknown error')
+	}
+}
