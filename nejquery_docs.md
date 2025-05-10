@@ -1,3 +1,15 @@
+## Table of Contents
+
+- [Array functions](#array-functions)
+- [Number functions](#number-functions)
+- [String functions](#string-functions)
+- [Objects](#objects)
+- [Helpers](#helpers)
+- [Utils](#utils)
+- [Debugging functions](#debugging-functions)
+- [Predicates](#predicates)
+
+
 ## Array functions
 
 ### `at`
