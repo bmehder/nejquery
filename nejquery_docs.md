@@ -2,859 +2,1616 @@
 
 ### `at`
 
-**Description:** Performs the `at` operation.
+**Description:**  
+Returns the element at the specified index in an array. Supports negative indexing.
 
 ```js
-at(...) // => ...
+export const at = x => xs => xs.at(x)
 ```
+
+```js
+at(-1)([1, 2, 3]) // => 3
+```
+
+---
 
 ### `chunk`
 
-**Description:** Performs the `chunk` operation.
+**Description:**  
+Splits an array into chunks of a specified size.
 
 ```js
-chunk(...) // => ...
+export const chunk = size => xs =>
+  xs.reduce((acc, _, i, xs) => {
+    i % size === 0 ? (acc = [...acc, xs.slice(i, i + size)]) : acc
+    return acc
+  }, [])
 ```
+
+```js
+chunk(2)([1, 2, 3, 4, 5]) // => [[1, 2], [3, 4], [5]]
+```
+
+---
 
 ### `concat`
 
-**Description:** Concatenates two arrays.
+**Description:**  
+Concatenates two arrays.
 
 ```js
-concat(...) // => ...
+export const concat = a => b => a.concat(b)
 ```
+
+```js
+concat([1, 2])([3, 4]) // => [1, 2, 3, 4]
+```
+
+---
 
 ### `cons`
 
-**Description:** Performs the `cons` operation.
+**Description:**  
+Adds an element to the front of an array.
 
 ```js
-cons(...) // => ...
+export const cons = x => xs => [x, ...xs]
 ```
+
+```js
+cons(0)([1, 2, 3]) // => [0, 1, 2, 3]
+```
+
+---
 
 ### `count`
 
-**Description:** Performs the `count` operation.
+**Description:**  
+Counts how many times a specific value appears in an array.
 
 ```js
-count(...) // => ...
+export const count = x => xs => xs.filter(_x => _x === x).length
 ```
 
+```js
+count(2)([1, 2, 2, 3]) // => 2
+```
+
+---
 ### `difference`
 
-**Description:** Performs the `difference` operation.
+**Description:**  
+Returns a new array with elements from the first array that are not in the second.
 
 ```js
-difference(...) // => ...
+export const difference = x => y => x.filter(_x => !y.includes(_x))
 ```
+
+```js
+difference([1, 2, 3])([2, 4]) // => [1, 3]
+```
+
+---
 
 ### `every`
 
-**Description:** Performs the `every` operation.
+**Description:**  
+Checks if all elements in the array satisfy the predicate.
 
 ```js
-every(...) // => ...
+export const every = fn => xs => xs.every(fn)
 ```
+
+```js
+every(x => x > 0)([1, 2, 3]) // => true
+```
+
+---
 
 ### `filter`
 
-**Description:** Applies `filter` operation to a list.
+**Description:**  
+Returns a new array containing elements that satisfy the predicate.
+
+```js
+export const filter = fn => xs => xs.filter(fn ?? identity)
+```
 
 ```js
 filter(x => x > 1)([1, 2, 3]) // => [2, 3]
 ```
 
+---
+
 ### `find`
 
-**Description:** Performs the `find` operation.
+**Description:**  
+Returns the first element that satisfies the predicate.
 
 ```js
-find(...) // => ...
+export const find = fn => xs => xs.find(fn)
 ```
+
+```js
+find(x => x > 2)([1, 2, 3, 4]) // => 3
+```
+
+---
 
 ### `findAllIndexes`
 
-**Description:** Performs the `findAllIndexes` operation.
+**Description:**  
+Returns all indexes of elements that match the given value.
 
 ```js
-findAllIndexes(...) // => ...
+export const findAllIndexes = arg => xs => {
+  const folder = (acc, x, i) => (arg === x ? [...acc, i] : acc)
+  return fold(folder)([])(xs)
+}
 ```
+
+```js
+findAllIndexes(2)([1, 2, 3, 2, 4]) // => [1, 3]
+```
+
+---
 
 ### `findIndex`
 
-**Description:** Performs the `findIndex` operation.
+**Description:**  
+Returns the index of the first element that satisfies the predicate.
 
 ```js
-findIndex(...) // => ...
+export const findIndex = fn => xs => xs.findIndex(fn)
 ```
+
+```js
+findIndex(x => x > 2)([1, 2, 3, 4]) // => 2
+```
+
+---
 
 ### `findLastIndex`
 
-**Description:** Performs the `findLastIndex` operation.
+**Description:**  
+Returns the index of the last element that satisfies the predicate.
 
 ```js
-findLastIndex(...) // => ...
+export const findLastIndex = fn => xs => xs.findLastIndex(fn)
 ```
+
+```js
+findLastIndex(x => x % 2 === 0)([1, 2, 3, 4, 5]) // => 3
+```
+
+---
 
 ### `first`
 
-**Description:** Performs the `first` operation.
+**Description:**  
+Returns the first element in an array.
 
 ```js
-first(...) // => ...
+export const first = xs => xs.at(0)
 ```
+
+```js
+first([1, 2, 3]) // => 1
+```
+
+---
 
 ### `flat`
 
-**Description:** Performs the `flat` operation.
+**Description:**  
+Flattens an array one level deep using the native `flat()` method.
 
 ```js
-flat(...) // => ...
+export const flat = x => xs => xs.flat(x)
 ```
+
+```js
+flat(1)([1, [2, 3], [4]]) // => [1, 2, 3, 4]
+```
+
+---
 
 ### `flatMap`
 
-**Description:** Performs the `flatMap` operation.
+**Description:**  
+Maps each element and flattens the result one level deep.
 
 ```js
-flatMap(...) // => ...
+export const flatMap = fn => xs => xs.flatMap(fn)
 ```
+
+```js
+flatMap(x => [x, x])([1, 2]) // => [1, 1, 2, 2]
+```
+
+---
 
 ### `flatten`
 
-**Description:** Flattens a nested array one level.
+**Description:**  
+Flattens a nested array one level deep.
+
+```js
+export const flatten = xs => xs.flat(1)
+```
 
 ```js
 flatten([1, [2, 3]]) // => [1, 2, 3]
 ```
 
+---
+
 ### `flattenAll`
 
-**Description:** Recursively flattens a deeply nested array.
+**Description:**  
+Recursively flattens a deeply nested array.
+
+```js
+export const flattenAll = xs => {
+  const fn = (acc, item) =>
+    Array.isArray(item) ? [...acc, ...flattenAll(item)] : [...acc, item]
+
+  return fold(fn)([])(xs)
+}
+```
 
 ```js
 flattenAll([1, [2, [3, [4]]]]) // => [1, 2, 3, 4]
 ```
 
+---
+
 ### `fold`
 
-**Description:** Applies `fold` operation to a list.
+**Description:**  
+Reduces an array using a binary function and an initial accumulator value.
 
 ```js
-fold(...) // => ...
+export const fold = fn => arg => xs => xs.reduce(fn, arg ?? xs[0])
 ```
+
+```js
+fold((a, b) => a + b)(0)([1, 2, 3]) // => 6
+```
+
+---
 
 ### `forEach`
 
-**Description:** Performs the `forEach` operation.
+**Description:**  
+Applies a function to each element in the array for side effects.
 
 ```js
-forEach(...) // => ...
+export const forEach = fn => xs => xs.forEach(fn ?? identity)
 ```
 
+```js
+forEach(console.log)([1, 2, 3])
+// logs: 1, 2, 3
+```
+
+---
 ### `getArrayKeys`
 
-**Description:** Performs the `getArrayKeys` operation.
+**Description:**  
+Returns the array of numeric indices from an array.
 
 ```js
-getArrayKeys(...) // => ...
+export const getArrayKeys = xs => [...xs.keys()]
 ```
+
+```js
+getArrayKeys(['a', 'b', 'c']) // => [0, 1, 2]
+```
+
+---
 
 ### `hasAllElems`
 
-**Description:** Performs the `hasAllElems` operation.
+**Description:**  
+Checks if all elements of the first array exist in the second.
 
 ```js
-hasAllElems(...) // => ...
+export const hasAllElems = (xs1, xs2) => xs1.every(x => xs2.includes(x))
 ```
+
+```js
+hasAllElems([1, 2], [1, 2, 3]) // => true
+```
+
+---
 
 ### `head`
 
-**Description:** Performs the `head` operation.
+**Description:**  
+Returns the first element in an array. Alias for `first`.
 
 ```js
-head(...) // => ...
+export const head = first
 ```
+
+```js
+head([10, 20, 30]) // => 10
+```
+
+---
 
 ### `includes`
 
-**Description:** Checks if an item exists in a list.
+**Description:**  
+Checks whether the array includes a given value.
 
 ```js
-includes(...) // => ...
+export const includes = x => xs => xs.includes(x)
 ```
+
+```js
+includes(2)([1, 2, 3]) // => true
+```
+
+---
 
 ### `indexOf`
 
-**Description:** Performs the `indexOf` operation.
+**Description:**  
+Returns the first index at which a given element can be found.
 
 ```js
-indexOf(...) // => ...
+export const indexOf = x => xs => xs.indexOf(x)
 ```
+
+```js
+indexOf(3)([1, 2, 3, 2]) // => 2
+```
+
+---
 
 ### `intersection`
 
-**Description:** Performs the `intersection` operation.
+**Description:**  
+Returns a new array containing elements common to both arrays.
 
 ```js
-intersection(...) // => ...
+export const intersection = x => y =>
+  [...new Set(x)].filter(_x => new Set(y).has(_x))
 ```
+
+```js
+intersection([1, 2, 3])([2, 3, 4]) // => [2, 3]
+```
+
+---
 
 ### `intersperse`
 
-**Description:** Performs the `intersperse` operation.
+**Description:**  
+Inserts a separator between elements of an array.
 
 ```js
-intersperse(...) // => ...
+export const intersperse = arg => xs => xs.flatMap(x => [x, arg]).slice(0, -1)
 ```
+
+```js
+intersperse('-')(['a', 'b', 'c']) // => ['a', '-', 'b', '-', 'c']
+```
+
+---
 
 ### `join`
 
-**Description:** Joins elements of an array into a string.
+**Description:**  
+Joins all elements of an array into a string with a separator.
+
+```js
+export const join = x => xs => xs.join(x ?? '')
+```
 
 ```js
 join('-')([1, 2, 3]) // => '1-2-3'
 ```
 
+---
+
 ### `joinArray`
 
-**Description:** Performs the `joinArray` operation.
+**Description:**  
+Joins all elements of an array into a string without any separator.
 
 ```js
-joinArray(...) // => ...
+export const joinArray = join('')
 ```
+
+```js
+joinArray(['a', 'b', 'c']) // => 'abc'
+```
+
+---
 
 ### `keep`
 
-**Description:** Performs the `keep` operation.
+**Description:**  
+Alias for `filter` — keeps values that satisfy a predicate.
 
 ```js
-keep(...) // => ...
+export const keep = filter
 ```
+
+```js
+keep(x => x % 2 === 0)([1, 2, 3, 4]) // => [2, 4]
+```
+
+---
 
 ### `keys`
 
-**Description:** Performs the `keys` operation.
+**Description:**  
+Returns an iterator of the array’s keys (indexes).
 
 ```js
-keys(...) // => ...
+export const keys = xs => xs.keys()
 ```
+
+```js
+[...keys(['a', 'b'])] // => [0, 1]
+```
+
+---
 
 ### `last`
 
-**Description:** Performs the `last` operation.
+**Description:**  
+Returns the last element in an array.
 
 ```js
-last(...) // => ...
+export const last = xs => xs.at(-1)
 ```
+
+```js
+last([1, 2, 3]) // => 3
+```
+
+---
 
 ### `lastIndexOf`
 
-**Description:** Performs the `lastIndexOf` operation.
+**Description:**  
+Returns the last index at which a given element can be found.
 
 ```js
-lastIndexOf(...) // => ...
+export const lastIndexOf = x => xs => xs.lastIndexOf(x)
 ```
+
+```js
+lastIndexOf(2)([1, 2, 3, 2]) // => 3
+```
+
+---
 
 ### `map`
 
-**Description:** Applies `map` operation to a list.
+**Description:**  
+Applies a function to each element in an array.
+
+```js
+export const map = fn => xs => xs.map(fn ?? identity)
+```
 
 ```js
 map(x => x * 2)([1, 2, 3]) // => [2, 4, 6]
 ```
 
+---
+
 ### `partition`
 
-**Description:** Performs the `partition` operation.
+**Description:**  
+Splits an array into two groups: those that satisfy the predicate and those that don’t.
 
 ```js
-partition(...) // => ...
+export const partition = fn => xs =>
+  xs.reduce(
+    (acc, x) =>
+      fn(x) ? [[...acc[0], x], [...acc[1]]] : [[...acc[0]], [...acc[1], x]],
+    [[], []]
+  )
 ```
+
+```js
+partition(x => x % 2 === 0)([1, 2, 3, 4]) // => [[2, 4], [1, 3]]
+```
+
+---
 
 ### `push`
 
-**Description:** Performs the `push` operation.
+**Description:**  
+Returns a new array with an item added to the end.
 
 ```js
-push(...) // => ...
+export const push = x => xs => [...xs, x]
 ```
+
+```js
+push(4)([1, 2, 3]) // => [1, 2, 3, 4]
+```
+
+---
 
 ### `reduce`
 
-**Description:** Applies `reduce` operation to a list.
+**Description:**  
+Applies a reducer function to the array, returning a single result.
+
+```js
+export const reduce = fn => xs => xs.reduce(fn)
+```
 
 ```js
 reduce((a, b) => a + b)([1, 2, 3]) // => 6
 ```
 
+---
+
 ### `reject`
 
-**Description:** Performs the `reject` operation.
+**Description:**  
+Filters out items that match the predicate.
 
 ```js
-reject(...) // => ...
+export const reject = fn => xs => xs.filter(not(fn) ?? identity)
 ```
+
+```js
+reject(x => x > 1)([1, 2, 3]) // => [1]
+```
+
+---
 
 ### `reverse`
 
-**Description:** Performs the `reverse` operation.
+**Description:**  
+Returns a reversed copy of the array.
+
+```js
+export const reverse = xs => xs.toReversed()
+```
 
 ```js
 reverse([1, 2, 3]) // => [3, 2, 1]
 ```
 
+---
+
 ### `second`
 
-**Description:** Performs the `second` operation.
+**Description:**  
+Returns the second element of the array.
 
 ```js
-second(...) // => ...
+export const second = xs => xs.at(1)
 ```
+
+```js
+second([10, 20, 30]) // => 20
+```
+
+---
 
 ### `shallowCopy`
 
-**Description:** Performs the `shallowCopy` operation.
+**Description:**  
+Creates a shallow copy of an array.
 
 ```js
-shallowCopy(...) // => ...
+export const shallowCopy = x => [...x]
 ```
+
+```js
+shallowCopy([1, 2, 3]) // => [1, 2, 3]
+```
+
+---
 
 ### `shuffle`
 
-**Description:** Performs the `shuffle` operation.
+**Description:**  
+Randomizes the order of elements in an array.
 
 ```js
-shuffle(...) // => ...
+export const shuffle = xs => xs.sort(() => 0.5 - Math.random())
 ```
+
+```js
+shuffle([1, 2, 3]) // => [2, 3, 1] (random order)
+```
+
+---
 
 ### `slice`
 
-**Description:** Performs the `slice` operation.
+**Description:**  
+Extracts a section of the array between two indexes.
 
 ```js
-slice(...) // => ...
+export const slice = start => end => strOrNum => strOrNum.slice(start, end)
 ```
+
+```js
+slice(1)(3)([0, 1, 2, 3, 4]) // => [1, 2]
+```
+
+---
 
 ### `some`
 
-**Description:** Performs the `some` operation.
+**Description:**  
+Checks if at least one item in the array satisfies the predicate.
 
 ```js
-some(...) // => ...
+export const some = fn => xs => xs.some(fn)
 ```
+
+```js
+some(x => x > 2)([1, 2, 3]) // => true
+```
+
+---
 
 ### `sort`
 
-**Description:** Performs the `sort` operation.
+**Description:**  
+Returns a sorted copy of the array using the given compare function.
 
 ```js
-sort(...) // => ...
+export const sort = fn => xs => xs.toSorted(fn)
 ```
+
+```js
+sort((a, b) => b - a)([3, 1, 2]) // => [3, 2, 1]
+```
+
+---
 
 ### `spread`
 
-**Description:** Performs the `spread` operation.
+**Description:**  
+Creates a shallow copy of an array using the spread operator.
 
 ```js
-spread(...) // => ...
+export const spread = x => [...x]
 ```
+
+```js
+spread([1, 2, 3]) // => [1, 2, 3]
+```
+
+---
 
 ### `tail`
 
-**Description:** Performs the `tail` operation.
+**Description:**  
+Returns all elements of the array except the first.
 
 ```js
-tail(...) // => ...
+export const tail = xs => xs.slice(1)
 ```
+
+```js
+tail([1, 2, 3]) // => [2, 3]
+```
+
+---
 
 ### `take`
 
-**Description:** Performs the `take` operation.
+**Description:**  
+Returns the first `n` elements of the array.
 
 ```js
-take(...) // => ...
+export const take = x => xs => xs.slice(0, x)
 ```
+
+```js
+take(2)([1, 2, 3, 4]) // => [1, 2]
+```
+
+---
 
 ### `toObject`
 
-**Description:** Converts input using `toObject`.
+**Description:**  
+Converts an array of key-value pairs into an object.
 
 ```js
-toObject(...) // => ...
+export const toObject = Object.fromEntries
 ```
+
+```js
+toObject([['a', 1], ['b', 2]]) // => { a: 1, b: 2 }
+```
+
+---
 
 ### `union`
 
-**Description:** Performs the `union` operation.
+**Description:**  
+Returns a new array containing the union of two arrays (no duplicates).
 
 ```js
-union(...) // => ...
+export const union = x => y => [...new Set([...x, ...y])]
 ```
+
+```js
+union([1, 2])([2, 3]) // => [1, 2, 3]
+```
+
+---
 
 ### `uniq`
 
-**Description:** Performs the `uniq` operation.
+**Description:**  
+Removes duplicate values from an array.
+
+```js
+export const uniq = xs => [...new Set(xs)]
+```
 
 ```js
 uniq([1, 2, 2, 3]) // => [1, 2, 3]
 ```
 
+---
+
 ### `unzip`
 
-**Description:** Performs the `unzip` operation.
+**Description:**  
+Converts an array of pairs into two arrays of firsts and seconds.
 
 ```js
-unzip(...) // => ...
+const doUnzip = ([xs, ys], [x, y]) => [
+  [...xs, x],
+  [...ys, y],
+]
+
+export const unzip = xs => xs.reduce(doUnzip, [[], []])
 ```
 
+```js
+unzip([[1, 'a'], [2, 'b'], [3, 'c']]) // => [[1, 2, 3], ['a', 'b', 'c']]
+```
 
+---
 
 ## Helpers
 
 ### `flip`
 
-**Description:** Performs the `flip` operation.
+**Description:**  
+Reverses the order of the first two arguments of a curried binary function.
 
 ```js
-flip(...) // => ...
+export const flip = fn => x => y => fn(y)(x)
 ```
+
+```js
+const subtract = a => b => a - b
+flip(subtract)(1)(5) // => 4
+```
+
+---
 
 ### `setCountMap`
 
-**Description:** Performs the `setCountMap` operation.
+**Description:**  
+Creates a `Map` counting the occurrences of each item in the array.
 
 ```js
-setCountMap(...) // => ...
+export const setCountMap = xs =>
+  xs.reduce((map, x) => map.set(x, map.get(x) + 1 || 1), new Map())
 ```
 
+```js
+[...setCountMap(['a', 'b', 'a']).entries()] // => [['a', 2], ['b', 1]]
+```
+
+---
 
 
 ## Number functions
 
 ### `abs`
 
-**Description:** Performs the `abs` operation.
+**Description:**  
+Returns the absolute value of a number.
 
 ```js
-abs(...) // => ...
+export const abs = Math.abs
 ```
+
+```js
+abs(-5) // => 5
+```
+
+---
 
 ### `add`
 
-**Description:** Returns the result of `add` operation on two numbers.
+**Description:**  
+Adds two numbers.
+
+```js
+export const add = x => y => x + y
+```
 
 ```js
 add(2)(3) // => 5
 ```
 
+---
+
 ### `ceil`
 
-**Description:** Performs the `ceil` operation.
+**Description:**  
+Rounds a number upward to the nearest integer.
 
 ```js
-ceil(...) // => ...
+export const ceil = Math.ceil
 ```
+
+```js
+ceil(1.2) // => 2
+```
+
+---
 
 ### `dec`
 
-**Description:** Performs the `dec` operation.
+**Description:**  
+Decrements a number by 1.
 
 ```js
-dec(...) // => ...
+export const dec = x => (x -= 1)
 ```
+
+```js
+dec(3) // => 2
+```
+
+---
 
 ### `div`
 
-**Description:** Returns the result of `div` operation on two numbers.
+**Description:**  
+Divides the first number by the second.
+
+```js
+export const div = x => y => x / y
+```
 
 ```js
 div(10)(2) // => 5
 ```
 
+---
+
 ### `divBy`
 
-**Description:** Performs the `divBy` operation.
+**Description:**  
+Divides the second number by the first.
 
 ```js
-divBy(...) // => ...
+export const divBy = x => y => y / x
 ```
+
+```js
+divBy(2)(10) // => 5
+```
+
+---
 
 ### `floor`
 
-**Description:** Performs the `floor` operation.
+**Description:**  
+Rounds a number downward to the nearest integer.
 
 ```js
-floor(...) // => ...
+export const floor = Math.floor
 ```
+
+```js
+floor(1.8) // => 1
+```
+
+---
 
 ### `inc`
 
-**Description:** Performs the `inc` operation.
+**Description:**  
+Increments a number by 1.
 
 ```js
-inc(...) // => ...
+export const inc = x => (x += 1)
 ```
+
+```js
+inc(3) // => 4
+```
+
+---
 
 ### `max`
 
-**Description:** Performs the `max` operation.
+**Description:**  
+Returns the largest of the given numbers.
 
 ```js
-max(...) // => ...
+export const max = (...args) => Math.max(...args)
 ```
+
+```js
+max(1, 5, 3) // => 5
+```
+
+---
 
 ### `min`
 
-**Description:** Performs the `min` operation.
+**Description:**  
+Returns the smallest of the given numbers.
 
 ```js
-min(...) // => ...
+export const min = (...args) => Math.min(...args)
 ```
+
+```js
+min(1, 5, 3) // => 1
+```
+
+---
 
 ### `mod`
 
-**Description:** Returns the result of `mod` operation on two numbers.
+**Description:**  
+Returns the remainder of dividing two numbers.
+
+```js
+export const mod = x => y => x % y
+```
 
 ```js
 mod(10)(3) // => 1
 ```
 
+---
+
 ### `mul`
 
-**Description:** Returns the result of `mul` operation on two numbers.
+**Description:**  
+Multiplies two numbers.
+
+```js
+export const mul = x => y => x * y
+```
 
 ```js
 mul(3)(4) // => 12
 ```
 
+---
+
 ### `negate`
 
-**Description:** Performs the `negate` operation.
+**Description:**  
+Negates a number.
 
 ```js
-negate(...) // => ...
+export const negate = x => -x
 ```
+
+```js
+negate(5) // => -5
+```
+
+---
 
 ### `round`
 
-**Description:** Performs the `round` operation.
+**Description:**  
+Rounds a number to the nearest integer.
 
 ```js
-round(...) // => ...
+export const round = Math.round
 ```
+
+```js
+round(2.6) // => 3
+```
+
+---
 
 ### `sqrt`
 
-**Description:** Performs the `sqrt` operation.
+**Description:**  
+Returns the square root of a number.
 
 ```js
-sqrt(...) // => ...
+export const sqrt = Math.sqrt
 ```
+
+```js
+sqrt(9) // => 3
+```
+
+---
 
 ### `square`
 
-**Description:** Performs the `square` operation.
+**Description:**  
+Returns the square of a number.
 
 ```js
-square(...) // => ...
+export const square = x => x * x
 ```
+
+```js
+square(5) // => 25
+```
+
+---
 
 ### `sub`
 
-**Description:** Returns the result of `sub` operation on two numbers.
+**Description:**  
+Subtracts the second number from the first.
+
+```js
+export const sub = x => y => x - y
+```
 
 ```js
 sub(5)(2) // => 3
 ```
 
+---
+
 ### `subBy`
 
-**Description:** Performs the `subBy` operation.
+**Description:**  
+Subtracts the first number from the second.
 
 ```js
-subBy(...) // => ...
+export const subBy = x => y => y - x
 ```
+
+```js
+subBy(2)(5) // => 3
+```
+
+---
 
 ### `sum`
 
-**Description:** Performs the `sum` operation.
+**Description:**  
+Adds up all numbers in the array.
 
 ```js
-sum(...) // => ...
+export const sum = xs => xs.reduce((acc, x) => add(acc)(x))
 ```
+
+```js
+sum([1, 2, 3, 4]) // => 10
+```
+
+---
 
 ### `toFixed`
 
-**Description:** Converts input using `toFixed`.
+**Description:**  
+Formats a number using fixed-point notation.
 
 ```js
-toFixed(...) // => ...
+export const toFixed = arg => x => x.toFixed(arg)
 ```
+
+```js
+toFixed(2)(3.14159) // => '3.14'
+```
+
+---
 
 ### `toLocaleString`
 
-**Description:** Converts input using `toLocaleString`.
+**Description:**  
+Converts a number to a locale-specific string representation.
 
 ```js
-toLocaleString(...) // => ...
+export const toLocaleString = arg => x => x.toLocaleString(arg)
 ```
 
+```js
+toLocaleString('en-US')(1234567.89) // => '1,234,567.89'
+```
 
+---
 
 ## Objects
 
 ### `getKeys`
 
-**Description:** Performs the `getKeys` operation.
+**Description:**  
+Returns the enumerable property names of an object.
 
 ```js
-getKeys(...) // => ...
+export const getKeys = Object.keys
 ```
+
+```js
+getKeys({ a: 1, b: 2 }) // => ['a', 'b']
+```
+
+---
 
 ### `getProp`
 
-**Description:** Returns the value of a specified property from an object.
+**Description:**  
+Returns the value of a specified property from an object.
 
 ```js
-getProp(...) // => ...
+export const getProp = x => obj => obj[x]
 ```
+
+```js
+getProp('name')({ name: 'Alice' }) // => 'Alice'
+```
+
+---
 
 ### `getValues`
 
-**Description:** Performs the `getValues` operation.
+**Description:**  
+Returns the enumerable property values of an object.
 
 ```js
-getValues(...) // => ...
+export const getValues = Object.values
 ```
+
+```js
+getValues({ a: 1, b: 2 }) // => [1, 2]
+```
+
+---
 
 ### `groupBy`
 
-**Description:** Groups a list of items based on a key or function.
+**Description:**  
+Groups elements of an array by a key generated from the provided function.
+
+```js
+export const groupBy = fn => obj => Object.groupBy(obj, fn)
+```
 
 ```js
 groupBy(x => x % 2)([1, 2, 3, 4]) // => { '0': [2, 4], '1': [1, 3] }
 ```
 
+---
+
 ### `groupByProp`
 
-**Description:** Performs the `groupByProp` operation.
+**Description:**  
+Groups objects in an array by a specified property.
 
 ```js
-groupByProp(...) // => ...
+export const groupByProp = x => groupBy(getProp(x))
 ```
+
+```js
+groupByProp('type')([
+  { type: 'fruit', name: 'apple' },
+  { type: 'vegetable', name: 'carrot' },
+  { type: 'fruit', name: 'banana' }
+]) // => { fruit: [...], vegetable: [...] }
+```
+
+---
 
 ### `pluck`
 
-**Description:** Returns the value of a specified property from an object.
+**Description:**  
+Returns the value of a specified property from an object. Alias of `getProp`.
+
+```js
+export const pluck = x => obj => obj[x]
+```
 
 ```js
 pluck('id')({ id: 42 }) // => 42
 ```
 
+---
+
 ### `toArray`
 
-**Description:** Converts input using `toArray`.
+**Description:**  
+Converts an object into an array of `[key, value]` pairs.
 
 ```js
-toArray(...) // => ...
+export const toArray = Object.entries
 ```
 
+```js
+toArray({ a: 1, b: 2 }) // => [['a', 1], ['b', 2]]
+```
 
+---
 
 ## String functions
 
 ### `append`
 
-**Description:** Performs the `append` operation.
+**Description:**  
+Appends a string to the end of another string.
 
 ```js
-append(...) // => ...
+export const append = x => y => y + x
 ```
+
+```js
+append('world')('hello ') // => 'hello world'
+```
+
+---
 
 ### `capitalize`
 
-**Description:** Performs the `capitalize` operation.
+**Description:**  
+Capitalizes the first character of a string.
+
+```js
+export const capitalize = x => x.charAt(0).toUpperCase() + x.slice(1)
+```
 
 ```js
 capitalize('hello') // => 'Hello'
 ```
 
+---
+
 ### `endsWith`
 
-**Description:** Performs the `endsWith` operation.
+**Description:**  
+Checks if a string ends with the given substring.
 
 ```js
-endsWith(...) // => ...
+export const endsWith = arg => x => x.endsWith(arg)
 ```
+
+```js
+endsWith('bar')('foobar') // => true
+```
+
+---
 
 ### `getLength`
 
-**Description:** Performs the `getLength` operation.
+**Description:**  
+Returns the length of a string or array.
 
 ```js
-getLength(...) // => ...
+export const getLength = xs => xs.length
 ```
+
+```js
+getLength([1, 2, 3]) // => 3
+```
+
+---
 
 ### `length`
 
-**Description:** Performs the `length` operation.
+**Description:**  
+Alias of `getLength`.
 
 ```js
-length(...) // => ...
+export const length = getLength
 ```
+
+```js
+length('hello') // => 5
+```
+
+---
 
 ### `padEnd`
 
-**Description:** Performs the `padEnd` operation.
+**Description:**  
+Pads the end of a string with a given character until it reaches the target length.
 
 ```js
-padEnd(...) // => ...
+export const padEnd = len => arg => x => x.padEnd(len, arg)
 ```
+
+```js
+padEnd(6)('.')('hi') // => 'hi....'
+```
+
+---
 
 ### `padStart`
 
-**Description:** Performs the `padStart` operation.
+**Description:**  
+Pads the start of a string with a given character until it reaches the target length.
 
 ```js
-padStart(...) // => ...
+export const padStart = len => arg => x => x.padStart(len, arg)
 ```
+
+```js
+padStart(6)('.')('hi') // => '....hi'
+```
+
+---
 
 ### `parseJSON`
 
-**Description:** Performs the `parseJSON` operation.
+**Description:**  
+Parses a JSON string into a JavaScript object.
 
 ```js
-parseJSON(...) // => ...
+export const parseJSON = x => JSON.parse(x)
 ```
+
+```js
+parseJSON('{"a":1}') // => { a: 1 }
+```
+
+---
 
 ### `repeat`
 
-**Description:** Performs the `repeat` operation.
+**Description:**  
+Repeats a string a given number of times.
 
 ```js
-repeat(...) // => ...
+export const repeat = arg => x => x.repeat(arg)
 ```
+
+```js
+repeat(3)('na') // => 'nanana'
+```
+
+---
 
 ### `replace`
 
-**Description:** Performs the `replace` operation.
+**Description:**  
+Replaces the first match of a substring or pattern in a string.
 
 ```js
-replace(...) // => ...
+export const replace = regex => arg => x => x.replace(regex, arg)
 ```
+
+```js
+replace('foo')('bar')('foo baz') // => 'bar baz'
+```
+
+---
 
 ### `replaceAll`
 
-**Description:** Performs the `replaceAll` operation.
+**Description:**  
+Replaces all matches of a substring or pattern in a string.
 
 ```js
-replaceAll(...) // => ...
+export const replaceAll = regex => arg => x => x.replaceAll(regex, arg)
 ```
+
+```js
+replaceAll('a')('x')('banana') // => 'bxnxnx'
+```
+
+---
 
 ### `reverseChars`
 
-**Description:** Performs the `reverseChars` operation.
+**Description:**  
+Reverses the characters in a string.
 
 ```js
-reverseChars(...) // => ...
+export const reverseChars = x => x.toReversed().join('')
 ```
+
+```js
+reverseChars('hello') // => 'olleh'
+```
+
+---
 
 ### `split`
 
-**Description:** Splits a string into an array.
+**Description:**  
+Splits a string into an array using a delimiter.
+
+```js
+export const split = arg => x => x.split(arg ?? '')
+```
 
 ```js
 split('-')('1-2-3') // => ['1', '2', '3']
 ```
 
+---
+
 ### `splitChars`
 
-**Description:** Performs the `splitChars` operation.
+**Description:**  
+Splits a string into an array of individual characters.
 
 ```js
-splitChars(...) // => ...
+export const splitChars = split('')
 ```
+
+```js
+splitChars('abc') // => ['a', 'b', 'c']
+```
+
+---
 
 ### `splitOnSpace`
 
-**Description:** Performs the `splitOnSpace` operation.
+**Description:**  
+Splits a string into an array of words separated by spaces.
 
 ```js
-splitOnSpace(...) // => ...
+export const splitOnSpace = split(' ')
 ```
+
+```js
+splitOnSpace('hello world') // => ['hello', 'world']
+```
+
+---
 
 ### `startsWith`
 
-**Description:** Performs the `startsWith` operation.
+**Description:**  
+Checks if a string starts with the given substring.
 
 ```js
-startsWith(...) // => ...
+export const startsWith = arg => x => x.startsWith(arg)
 ```
+
+```js
+startsWith('foo')('foobar') // => true
+```
+
+---
 
 ### `stringify`
 
-**Description:** Performs the `stringify` operation.
+**Description:**  
+Converts a JavaScript object to a pretty-printed JSON string.
 
 ```js
-stringify(...) // => ...
+export const stringify = x => JSON.stringify(x, null, 2)
 ```
+
+```js
+stringify({ a: 1 }) // => '{\n  "a": 1\n}'
+```
+
+---
 
 ### `substring`
 
-**Description:** Performs the `substring` operation.
+**Description:**  
+Extracts a substring between two indices.
 
 ```js
-substring(...) // => ...
+export const substring = start => end => x => x.substring(start, end)
 ```
+
+```js
+substring(1)(3)('hello') // => 'el'
+```
+
+---
 
 ### `toLocaleLowerCase`
 
-**Description:** Converts input using `toLocaleLowerCase`.
+**Description:**  
+Converts a string to lower case using locale-specific case mappings.
 
 ```js
-toLocaleLowerCase(...) // => ...
+export const toLocaleLowerCase = x => x.toLocaleLowerCase()
 ```
+
+```js
+toLocaleLowerCase('HELLO') // => 'hello'
+```
+
+---
 
 ### `toLocaleUpperCase`
 
-**Description:** Converts input using `toLocaleUpperCase`.
+**Description:**  
+Converts a string to upper case using locale-specific case mappings.
 
 ```js
-toLocaleUpperCase(...) // => ...
+export const toLocaleUpperCase = x => x.toLocaleUpperCase()
 ```
+
+```js
+toLocaleUpperCase('hello') // => 'HELLO'
+```
+
+---
 
 ### `toLowerCase`
 
-**Description:** Converts input using `toLowerCase`.
+**Description:**  
+Converts a string to lower case.
 
 ```js
-toLowerCase(...) // => ...
+export const toLowerCase = x => x.toLowerCase()
 ```
+
+```js
+toLowerCase('HELLO') // => 'hello'
+```
+
+---
 
 ### `toUpperCase`
 
-**Description:** Converts input using `toUpperCase`.
+**Description:**  
+Converts a string to upper case.
 
 ```js
-toUpperCase(...) // => ...
+export const toUpperCase = x => x.toUpperCase()
 ```
+
+```js
+toUpperCase('hello') // => 'HELLO'
+```
+
+---
 
 ### `trim`
 
-**Description:** Performs the `trim` operation.
+**Description:**  
+Removes whitespace from both ends of a string.
+
+```js
+export const trim = x => x.trim()
+```
 
 ```js
 trim('  hello ') // => 'hello'
 ```
 
+---
+
 ### `truncateWords`
 
-**Description:** Performs the `truncateWords` operation.
+**Description:**  
+Truncates a string to the first `n` words.
 
 ```js
-truncateWords(...) // => ...
+export const truncateWords = arg => x => x.split(' ').splice(0, arg).join(' ')
 ```
+
+```js
+truncateWords(2)('This is a test string') // => 'This is'
+```
+
+---
+
 
 
 
@@ -862,467 +1619,922 @@ truncateWords(...) // => ...
 
 ### `apply`
 
-**Description:** Performs the `apply` operation.
+**Description:**  
+Applies a value to a function. Alias of `thrush`.
 
 ```js
-apply(...) // => ...
+export const apply = fn => x => fn(x)
 ```
+
+```js
+apply(x => x + 1)(2) // => 3
+```
+
+---
 
 ### `applyReducer`
 
-**Description:** Performs the `applyReducer` operation.
+**Description:**  
+Helper function used for reducing over function chains.
 
 ```js
-applyReducer(...) // => ...
+export const applyReducer = (acc, fn) => fn(acc)
 ```
+
+```js
+applyReducer(2, x => x * 2) // => 4
+```
+
+---
 
 ### `applyToIndex`
 
-**Description:** Performs the `applyToIndex` operation.
+**Description:**  
+Creates a function that applies the given function to an element's index.
 
 ```js
-applyToIndex(...) // => ...
+export const applyToIndex = fn => (_, i) => fn(i)
 ```
+
+```js
+[0, 0, 0].map(applyToIndex(i => i * 2)) // => [0, 2, 4]
+```
+
+---
 
 ### `compose`
 
-**Description:** Composes functions right-to-left.
+**Description:**  
+Right-to-left function composition.
+
+```js
+export const compose =
+  (...fns) =>
+  x =>
+    fns.reduceRight(applyReducer, x)
+```
 
 ```js
 compose(x => x + 1, x => x * 2)(3) // => 7
 ```
 
+---
+
 ### `composeState`
 
-**Description:** Performs the `composeState` operation.
+**Description:**  
+Recursively applies state decorators to a state object.
 
 ```js
-composeState(...) // => ...
+export const composeState = (state, ...fns) => {
+  const reducer = (obj, fn) => ({
+    ...obj,
+    ...fn(obj, newState => composeState(newState, ...fns)),
+  })
+  return fns.reduce(reducer, state)
+}
 ```
+
+```js
+const addFoo = state => () => ({ foo: 1 })
+composeState({}, addFoo) // => { foo: 1 }
+```
+
+---
 
 ### `curry`
 
-**Description:** Transforms a function into its curried version.
+**Description:**  
+Transforms a multi-arg function into curried form.
 
 ```js
-const add3 = (a, b, c) => a + b + c;
+export function curry(fn) {
+  return function curried(...args) {
+    if (args.length >= fn.length) {
+      return fn.apply(this, args)
+    } else {
+      return function (...args2) {
+        return curried.apply(this, args.concat(args2))
+      }
+    }
+  }
+}
+```
+
+```js
+const add3 = (a, b, c) => a + b + c
 curry(add3)(1)(2)(3) // => 6
 ```
 
+---
+
 ### `identity`
 
-**Description:** Returns the input unchanged.
+**Description:**  
+Returns the input unchanged.
+
+```js
+export const identity = x => x
+```
 
 ```js
 identity(42) // => 42
 ```
 
+---
+
 ### `mapAll`
 
-**Description:** Performs the `mapAll` operation.
+**Description:**  
+Applies a list of functions to the same input.
 
 ```js
-mapAll(...) // => ...
+export const mapAll =
+  (...fns) =>
+  x =>
+    fns.map(fn => fn(x))
 ```
+
+```js
+mapAll(x => x + 1, x => x * 2)(3) // => [4, 6]
+```
+
+---
 
 ### `partial`
 
-**Description:** Partially applies arguments to a function.
+**Description:**  
+Alias of `curry`. Allows partial application.
+
+```js
+export const partial = curry
+```
 
 ```js
 partial((a, b) => a + b)(1)(2) // => 3
 ```
 
+---
+
 ### `pipe`
 
-**Description:** Composes functions left-to-right.
+**Description:**  
+Left-to-right function composition.
+
+```js
+export const pipe =
+  (...fns) =>
+  x =>
+    fns.reduce(applyReducer, x)
+```
 
 ```js
 pipe(x => x + 1, x => x * 2)(3) // => 8
 ```
 
+---
+
 ### `thrush`
 
-**Description:** Performs the `thrush` operation.
+**Description:**  
+Alias of `apply`. Applies a value to a function.
 
 ```js
-thrush(...) // => ...
+export const thrush = apply
 ```
+
+```js
+thrush(x => x * 10)(2) // => 20
+```
+
+---
 
 ### `uncurry`
 
-**Description:** Transforms a curried function into a variadic function.
+**Description:**  
+Transforms a curried function into a variadic function.
 
 ```js
-uncurry(...) // => ...
+export const uncurry =
+  fn =>
+  (...args) =>
+    (
+      _fn => _args =>
+        _args.reduce((_f, arg) => _f(arg), _fn)
+    )(fn)(args)
 ```
+
+```js
+const curried = a => b => c => a + b + c
+uncurry(curried)(1, 2, 3) // => 6
+```
+
+---
 
 ### `withLogger`
 
-**Description:** Performs the `withLogger` operation.
+**Description:**  
+Adds a `.log()` method to an object for debugging.
 
 ```js
-withLogger(...) // => ...
+export const withLogger = obj => ({
+  log: () => {
+    console.log('Object:')
+    Object.getOwnPropertyNames(obj).forEach(prop => {
+      const descriptor = Object.getOwnPropertyDescriptor(obj, prop)
+      if (typeof obj[prop] === 'function') {
+        console.log(`${prop}:`, obj[prop].toString())
+      } else {
+        console.log(`${prop}:`, obj[prop])
+      }
+    })
+    return obj
+  },
+})
 ```
+
+```js
+withLogger({ name: 'Alice' }).log()
+// logs object properties
+```
+
+---
 
 ### `withSet`
 
-**Description:** Performs the `withSet` operation.
+**Description:**  
+Adds an `updateProp` method to a state object for patching state.
 
 ```js
-withSet(...) // => ...
+export const withSet = (state, composer) => ({
+  updateProp: (prop, value) =>
+    composer({
+      ...state,
+      [prop]: value,
+    }),
+})
 ```
 
+```js
+const logState = x => console.log(x)
+withSet({ count: 0 }, logState).updateProp('count', 1)
+// logs: { count: 1 }
+```
+
+---
 
 
 ## debugging functions
 
 ### `collapsed`
 
-**Description:** Performs the `collapsed` operation.
+**Description:**  
+Starts a collapsed console group.
 
 ```js
-collapsed(...) // => ...
+export const collapsed = console.groupCollapsed
 ```
+
+```js
+collapsed('Debug Group')
+```
+
+---
 
 ### `getType`
 
-**Description:** Performs the `getType` operation.
+**Description:**  
+Returns the type of a value as a string.
 
 ```js
-getType(...) // => ...
+export const getType = x => typeof x
 ```
+
+```js
+getType(123) // => 'number'
+```
+
+---
 
 ### `group`
 
-**Description:** Performs the `group` operation.
+**Description:**  
+Starts a new console group.
 
 ```js
-group(...) // => ...
+export const group = console.group
 ```
+
+```js
+group('Grouped Output')
+```
+
+---
 
 ### `groupEnd`
 
-**Description:** Performs the `groupEnd` operation.
+**Description:**  
+Ends the current console group.
 
 ```js
-groupEnd(...) // => ...
+export const groupEnd = console.groupEnd
 ```
+
+```js
+groupEnd()
+```
+
+---
 
 ### `log`
 
-**Description:** Performs the `log` operation.
+**Description:**  
+Shortcut for `console.log`.
 
 ```js
-log(...) // => ...
+export const log = console.log
 ```
+
+```js
+log('Hello') // logs 'Hello'
+```
+
+---
 
 ### `note`
 
-**Description:** Performs the `note` operation.
+**Description:**  
+Logs a label and value, then returns the value.
 
 ```js
-note(...) // => ...
+export const note = compose(tap, tell)
 ```
+
+```js
+note('Value')(42) // logs: Value 42, returns 42
+```
+
+---
 
 ### `panic`
 
-**Description:** Performs the `panic` operation.
+**Description:**  
+Shortcut for `console.error`.
 
 ```js
-panic(...) // => ...
+export const panic = console.error
 ```
+
+```js
+panic('Something went wrong')
+```
+
+---
 
 ### `see`
 
-**Description:** Performs the `see` operation.
+**Description:**  
+Logs a value and returns it. Alias for `tap(console.log)`.
 
 ```js
-see(...) // => ...
+export const see = tap(log)
 ```
+
+```js
+see('test') // logs 'test' and returns 'test'
+```
+
+---
 
 ### `snitch`
 
-**Description:** Performs the `snitch` operation.
+**Description:**  
+Alias for `note`. Logs and returns the value.
 
 ```js
-snitch(...) // => ...
+export const snitch = note
 ```
+
+```js
+snitch('debug')(100)
+```
+
+---
 
 ### `table`
 
-**Description:** Performs the `table` operation.
+**Description:**  
+Shortcut for `console.table`.
 
 ```js
-table(...) // => ...
+export const table = console.table
 ```
+
+```js
+table([{ name: 'Alice' }, { name: 'Bob' }])
+```
+
+---
 
 ### `tap`
 
-**Description:** Applies a function to the input for side effects and returns the input.
+**Description:**  
+Runs a function for side effects and returns the input.
+
+```js
+export const tap = fn => x => (fn(x), identity(x))
+```
 
 ```js
 tap(console.log)('value') // logs 'value' and returns it
 ```
 
+---
+
 ### `tee`
 
-**Description:** Performs the `tee` operation.
+**Description:**  
+Alias for `tap`. Useful in data pipelines.
 
 ```js
-tee(...) // => ...
+export const tee = tap
 ```
+
+```js
+tee(console.log)('hello') // logs 'hello' and returns it
+```
+
+---
 
 ### `tell`
 
-**Description:** Performs the `tell` operation.
+**Description:**  
+Logs a value with an optional label.
 
 ```js
-tell(...) // => ...
+export const tell = label => x => label ? console.log(label, x) : console.log(x)
 ```
 
+```js
+tell('value')(123) // logs 'value 123'
+```
 
+---
 
 ## predicates
 
 ### `and`
 
-**Description:** Performs the `and` operation.
+**Description:**  
+Logical AND operation.
 
 ```js
-and(...) // => ...
+export const and = (a, b) => a && b
 ```
+
+```js
+and(true, false) // => false
+```
+
+---
 
 ### `isArray`
 
-**Description:** Returns true if the input satisfies the `isArray` condition.
+**Description:**  
+Returns true if the value is an array.
 
 ```js
-isArray(...) // => ...
+export const isArray = x => Array.isArray(x)
 ```
+
+```js
+isArray([1, 2, 3]) // => true
+```
+
+---
 
 ### `isClickOrEnter`
 
-**Description:** Returns true if the input satisfies the `isClickOrEnter` condition.
+**Description:**  
+Returns true if the event is a click or Enter key event.
 
 ```js
-isClickOrEnter(...) // => ...
+export const isClickOrEnter = evt => evt.type === 'click' || evt.key === 'Enter'
 ```
+
+```js
+isClickOrEnter({ type: 'click' }) // => true
+```
+
+---
 
 ### `isDivBy`
 
-**Description:** Returns true if the input satisfies the `isDivBy` condition.
+**Description:**  
+Returns true if the second number is divisible by the first.
 
 ```js
-isDivBy(...) // => ...
+export const isDivBy = x => y => y % x === 0
 ```
+
+```js
+isDivBy(3)(9) // => true
+```
+
+---
 
 ### `isEmptyArray`
 
-**Description:** Returns true if the input satisfies the `isEmptyArray` condition.
+**Description:**  
+Returns true if the value is an empty array.
 
 ```js
-isEmptyArray(...) // => ...
+export const isEmptyArray = xs => Array.isArray(xs) && xs.length === 0
 ```
+
+```js
+isEmptyArray([]) // => true
+```
+
+---
 
 ### `isEq`
 
-**Description:** Returns true if the input satisfies the `isEq` condition.
+**Description:**  
+Returns true if both values are strictly equal.
 
 ```js
-isEq(...) // => ...
+export const isEq = x => y => x === y
 ```
+
+```js
+isEq(1)(1) // => true
+```
+
+---
 
 ### `isEven`
 
-**Description:** Returns true if the input satisfies the `isEven` condition.
+**Description:**  
+Returns true if the number is even.
 
 ```js
-isEven(...) // => ...
+export const isEven = x => x % 2 === 0
 ```
+
+```js
+isEven(4) // => true
+```
+
+---
 
 ### `isGt`
 
-**Description:** Returns true if the input satisfies the `isGt` condition.
+**Description:**  
+Returns true if the value is greater than the argument.
 
 ```js
-isGt(...) // => ...
+export const isGt = arg => x => x > arg
 ```
+
+```js
+isGt(5)(10) // => true
+```
+
+---
 
 ### `isGtE`
 
-**Description:** Returns true if the input satisfies the `isGtE` condition.
+**Description:**  
+Returns true if the value is greater than or equal to the argument.
 
 ```js
-isGtE(...) // => ...
+export const isGtE = arg => x => x >= arg
 ```
+
+```js
+isGtE(5)(5) // => true
+```
+
+---
 
 ### `isLetter`
 
-**Description:** Returns true if the input satisfies the `isLetter` condition.
+**Description:**  
+Returns true if the value is a letter.
 
 ```js
-isLetter(...) // => ...
+export const isLetter = x => typeof x === 'string' && x.toLowerCase() !== x.toUpperCase()
 ```
+
+```js
+isLetter('A') // => true
+```
+
+---
 
 ### `isLetterOrNumber`
 
-**Description:** Returns true if the input satisfies the `isLetterOrNumber` condition.
+**Description:**  
+Returns true if the value is a letter or number.
 
 ```js
-isLetterOrNumber(...) // => ...
+export const isLetterOrNumber = x => isLetter(x) || isNumber(x)
 ```
+
+```js
+isLetterOrNumber('1') // => true
+```
+
+---
 
 ### `isLooseEq`
 
-**Description:** Returns true if the input satisfies the `isLooseEq` condition.
+**Description:**  
+Returns true if values are loosely equal (==).
 
 ```js
-isLooseEq(...) // => ...
+export const isLooseEq = x => y => x == y
 ```
+
+```js
+isLooseEq('1')(1) // => true
+```
+
+---
 
 ### `isLowerCase`
 
-**Description:** Returns true if the input satisfies the `isLowerCase` condition.
+**Description:**  
+Returns true if the letter is lowercase.
 
 ```js
-isLowerCase(...) // => ...
+export const isLowerCase = x => isLetter(x) && x === x.toLowerCase()
 ```
+
+```js
+isLowerCase('a') // => true
+```
+
+---
 
 ### `isLt`
 
-**Description:** Returns true if the input satisfies the `isLt` condition.
+**Description:**  
+Returns true if the value is less than the argument.
 
 ```js
-isLt(...) // => ...
+export const isLt = arg => x => x < arg
 ```
+
+```js
+isLt(5)(4) // => true
+```
+
+---
 
 ### `isLtE`
 
-**Description:** Returns true if the input satisfies the `isLtE` condition.
+**Description:**  
+Returns true if the value is less than or equal to the argument.
 
 ```js
-isLtE(...) // => ...
+export const isLtE = arg => x => x <= arg
 ```
+
+```js
+isLtE(5)(5) // => true
+```
+
+---
 
 ### `isMap`
 
-**Description:** Returns true if the input satisfies the `isMap` condition.
+**Description:**  
+Returns true if the value is a Map.
 
 ```js
-isMap(...) // => ...
+export const isMap = x => x instanceof Map
 ```
+
+```js
+isMap(new Map()) // => true
+```
+
+---
 
 ### `isNaN`
 
-**Description:** Returns true if the input satisfies the `isNaN` condition.
+**Description:**  
+Checks if a value is NaN.
 
 ```js
-isNaN(...) // => ...
+export const isNaN = x => Number.isNaN(x)
 ```
+
+```js
+isNaN(NaN) // => true
+```
+
+---
 
 ### `isNotEmptyArray`
 
-**Description:** Returns true if the input satisfies the `isNotEmptyArray` condition.
+**Description:**  
+Returns true if the value is a non-empty array.
 
 ```js
-isNotEmptyArray(...) // => ...
+export const isNotEmptyArray = xs => Array.isArray(xs) && xs.length > 0
 ```
+
+```js
+isNotEmptyArray([1]) // => true
+```
+
+---
 
 ### `isNotEmptyString`
 
-**Description:** Returns true if the input satisfies the `isNotEmptyString` condition.
+**Description:**  
+Returns true if the value is a non-empty string.
 
 ```js
-isNotEmptyString(...) // => ...
+export const isNotEmptyString = str => str.length > 0
 ```
+
+```js
+isNotEmptyString('hello') // => true
+```
+
+---
 
 ### `isNullish`
 
-**Description:** Returns true if the input satisfies the `isNullish` condition.
+**Description:**  
+Returns true if the value is `null` or `undefined`.
 
 ```js
-isNullish(...) // => ...
+export const isNullish = x => x == null
 ```
+
+```js
+isNullish(null) // => true
+```
+
+---
 
 ### `isNumber`
 
-**Description:** Returns true if the input satisfies the `isNumber` condition.
+**Description:**  
+Returns true if the value is a number.
 
 ```js
-isNumber(...) // => ...
+export const isNumber = x => !isNaN(+x)
 ```
+
+```js
+isNumber('42') // => true
+```
+
+---
 
 ### `isOdd`
 
-**Description:** Returns true if the input satisfies the `isOdd` condition.
+**Description:**  
+Returns true if the number is odd.
 
 ```js
-isOdd(...) // => ...
+export const isOdd = x => x % 2 !== 0
 ```
+
+```js
+isOdd(3) // => true
+```
+
+---
 
 ### `isSame`
 
-**Description:** Returns true if the input satisfies the `isSame` condition.
+**Description:**  
+Returns true if two values are the same using `Object.is()`.
 
 ```js
-isSame(...) // => ...
+export const isSame = x => y => Object.is(x, y)
 ```
+
+```js
+isSame(NaN)(NaN) // => true
+```
+
+---
 
 ### `isSet`
 
-**Description:** Returns true if the input satisfies the `isSet` condition.
+**Description:**  
+Returns true if the value is a Set.
 
 ```js
-isSet(...) // => ...
+export const isSet = x => x instanceof Set
 ```
+
+```js
+isSet(new Set()) // => true
+```
+
+---
 
 ### `isSpace`
 
-**Description:** Returns true if the input satisfies the `isSpace` condition.
+**Description:**  
+Returns true if the character is a space.
 
 ```js
-isSpace(...) // => ...
+export const isSpace = x => Object.is(x, ' ')
 ```
+
+```js
+isSpace(' ') // => true
+```
+
+---
 
 ### `isSpecialChar`
 
-**Description:** Returns true if the input satisfies the `isSpecialChar` condition.
+**Description:**  
+Returns true if the character is not a letter or number.
 
 ```js
-isSpecialChar(...) // => ...
+export const isSpecialChar = x => isNaN(x) && x.toLowerCase() === x.toUpperCase()
 ```
+
+```js
+isSpecialChar('@') // => true
+```
+
+---
 
 ### `isUniq`
 
-**Description:** Returns true if the input satisfies the `isUniq` condition.
+**Description:**  
+Returns true if all elements in the array are unique.
 
 ```js
-isUniq(...) // => ...
+export const isUniq = xs => new Set(xs).size === xs.length
 ```
+
+```js
+isUniq([1, 2, 3]) // => true
+```
+
+---
 
 ### `isUpperCase`
 
-**Description:** Returns true if the input satisfies the `isUpperCase` condition.
+**Description:**  
+Returns true if the letter is uppercase.
 
 ```js
-isUpperCase(...) // => ...
+export const isUpperCase = x => isLetter(x) && x === x.toUpperCase()
 ```
+
+```js
+isUpperCase('A') // => true
+```
+
+---
 
 ### `not`
 
-**Description:** Performs the `not` operation.
+**Description:**  
+Negates a predicate function.
+
+```js
+export const not =
+  fn =>
+  (...args) =>
+    !fn(...args)
+```
 
 ```js
 not(x => x > 1)(2) // => false
 ```
 
+---
+
 ### `or`
 
-**Description:** Performs the `or` operation.
+**Description:**  
+Logical OR operation.
 
 ```js
-or(...) // => ...
+export const or = (a, b) => a || b
 ```
+
+```js
+or(false, true) // => true
+```
+
+---
+
 
 
