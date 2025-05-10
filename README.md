@@ -9,7 +9,9 @@
 ## 🙃 Why not just use Ramda or Lodash?
 
 > Honestly? You should. They're battle-tested, community-loved, and full-featured.  
+
 > But if you've ever screamed "why is this curried nonsense so weird" or thought Lodash was a bit... much — welcome to **nejQuery**, the utility library your inner minimalist didn’t know it needed.
+
 
 ---
 
