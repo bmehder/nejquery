@@ -2060,6 +2060,30 @@ tell('value')(123) // logs 'value 123'
 
 ## predicates
 
+### `True`
+
+**Description:**  
+Returns `true`, ignoring any input.
+
+```js
+export const True = _ => true
+```
+
+```js
+True() // => true
+True('anything') // => true
+```
+
+---
+
+### `False`
+
+**Description:**  
+Returns `false`, ignoring any input.
+
+```js
+export const False = _ => false
+
 ### `and`
 
 **Description:**  

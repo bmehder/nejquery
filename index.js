@@ -326,6 +326,11 @@ export const getLength = xs => xs.length
 export const length = getLength
 
 // predicates
+
+export const True = _ => true
+
+export const False = _ => false
+
 export const not =
 	fn =>
 	(...args) =>
