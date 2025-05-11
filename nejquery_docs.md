@@ -2943,12 +2943,12 @@ Result.Err('Oops') // => { tag: 'Err', message: 'Oops' }
 Maps the value inside `Ok`, passes through `Err`.
 
 ```js
-export const mapResult = (fn, result) =>
+export const mapResult = fn => result =>
 	result.tag === 'Ok' ? Result.Ok(fn(result.value)) : result
 ```
 
 ```js
-mapResult(x => x + 1, Result.Ok(1)) // => Ok(2)
+mapResult(x => x + 1)(Result.Ok(1)) // => Ok(2)
 ```
 
 ---
@@ -2959,12 +2959,12 @@ mapResult(x => x + 1, Result.Ok(1)) // => Ok(2)
 Maps the value inside `Just`, passes through `Nothing`.
 
 ```js
-export const mapMaybe = (fn, maybe) =>
+export const mapMaybe = fn => maybe =>
 	maybe.tag === 'Just' ? Maybe.Just(fn(maybe.value)) : maybe
 ```
 
 ```js
-mapMaybe(x => x * 2, Maybe.Just(2)) // => Just(4)
+mapMaybe(x => x * 2)(Maybe.Just(2)) // => Just(4)
 ```
 
 ---
@@ -2975,12 +2975,12 @@ mapMaybe(x => x * 2, Maybe.Just(2)) // => Just(4)
 Applies a function to an `Ok` that returns another `Result`.
 
 ```js
-export const flatMapResult = (fn, result) =>
+export const flatMapResult = fn => result =>
 	result.tag === 'Ok' ? fn(result.value) : result
 ```
 
 ```js
-flatMapResult(x => Result.Ok(x * 2), Result.Ok(2)) // => Ok(4)
+flatMapResult(x => Result.Ok(x * 2))(Result.Ok(2)) // => Ok(4)
 ```
 
 ---
@@ -2991,12 +2991,12 @@ flatMapResult(x => Result.Ok(x * 2), Result.Ok(2)) // => Ok(4)
 Applies a function to a `Just` that returns another `Maybe`.
 
 ```js
-export const flatMapMaybe = (fn, maybe) =>
+export const flatMapMaybe = fn => maybe =>
 	maybe.tag === 'Just' ? fn(maybe.value) : maybe
 ```
 
 ```js
-flatMapMaybe(x => Maybe.Just(x * 2), Maybe.Just(2)) // => Just(4)
+flatMapMaybe(x => Maybe.Just(x * 2))(Maybe.Just(2)) // => Just(4)
 ```
 
 ---
@@ -3007,16 +3007,16 @@ flatMapMaybe(x => Maybe.Just(x * 2), Maybe.Just(2)) // => Just(4)
 Returns the value inside `Just` or `Ok`, or fallback.
 
 ```js
-export const unwrap = (adt, fallback) => {
+export const unwrap = fallback => adt => {
 	const { tag } = adt
 	if (tag === 'Just' || tag === 'Ok') return adt.value
-	if (arguments.length === 2) return fallback
+	if (fallback !== undefined) return fallback
 	throw new Error(`Cannot unwrap ${tag}`)
 }
 ```
 
 ```js
-unwrap(Maybe.Just(2)) // => 2
+unwrap(undefined)(Maybe.Just(2)) // => 2
 ```
 
 ---
@@ -3027,12 +3027,12 @@ unwrap(Maybe.Just(2)) // => 2
 Returns value inside `Just`/`Ok` or fallback.
 
 ```js
-export const defaultTo = (fallback, adt) =>
+export const defaultTo = fallback => adt =>
 	adt.tag === 'Just' || adt.tag === 'Ok' ? adt.value : fallback
 ```
 
 ```js
-defaultTo(0, Maybe.Nothing()) // => 0
+defaultTo(0)(Maybe.Nothing()) // => 0
 ```
 
 ---
@@ -3103,12 +3103,12 @@ isErr(Result.Err('fail')) // => true
 Applies a handler for `Nothing` or `Just`.
 
 ```js
-export const foldMaybe = (onNothing, onJust, maybe) =>
+export const foldMaybe = onNothing => onJust => maybe =>
 	maybe.tag === 'Just' ? onJust(maybe.value) : onNothing()
 ```
 
 ```js
-foldMaybe(() => 'none', x => x * 2, Maybe.Just(3)) // => 6
+foldMaybe(() => 'none')(x => x * 2)(Maybe.Just(3)) // => 6
 ```
 
 ---
@@ -3119,12 +3119,12 @@ foldMaybe(() => 'none', x => x * 2, Maybe.Just(3)) // => 6
 Applies a handler for `Err` or `Ok`.
 
 ```js
-export const foldResult = (onErr, onOk, result) =>
+export const foldResult = onErr => onOk => result =>
 	result.tag === 'Ok' ? onOk(result.value) : onErr(result.message)
 ```
 
 ```js
-foldResult(x => `fail: ${x}`, x => x + 1, Result.Ok(2)) // => 3
+foldResult(x => `fail: ${x}`)(x => x + 1)(Result.Ok(2)) // => 3
 ```
 
 ---

@@ -507,32 +507,26 @@ export const Result = createADT({
 	Err: ['message'],
 })
 
-export const mapResult = (fn, result) =>
+export const mapResult = fn => result =>
 	result.tag === 'Ok' ? Result.Ok(fn(result.value)) : result
 
-export const mapMaybe = (fn, maybe) =>
+export const mapMaybe = fn => maybe =>
 	maybe.tag === 'Just' ? Maybe.Just(fn(maybe.value)) : maybe
 
-export const flatMapResult = (fn, result) =>
-	result.tag === 'Ok'
-		? fn(result.value) // assume fn returns another Result
-		: result
+export const flatMapResult = fn => result =>
+	result.tag === 'Ok' ? fn(result.value) : result
 
-export const flatMapMaybe = (fn, maybe) =>
-	maybe.tag === 'Just'
-		? fn(maybe.value) // assume fn returns another Maybe
-		: maybe
+export const flatMapMaybe = fn => maybe =>
+	maybe.tag === 'Just' ? fn(maybe.value) : maybe
 
-export const unwrap = (adt, fallback) => {
+export const unwrap = fallback => adt => {
 	const { tag } = adt
-
 	if (tag === 'Just' || tag === 'Ok') return adt.value
-	if (arguments.length === 2) return fallback
-
+	if (fallback !== undefined) return fallback
 	throw new Error(`Cannot unwrap ${tag}`)
 }
 
-export const defaultTo = (fallback, adt) =>
+export const defaultTo = fallback => adt =>
 	adt.tag === 'Just' || adt.tag === 'Ok' ? adt.value : fallback
 
 export const isJust = maybe => maybe.tag === 'Just'
@@ -543,10 +537,10 @@ export const isOk = result => result.tag === 'Ok'
 
 export const isErr = result => result.tag === 'Err'
 
-export const foldMaybe = (onNothing, onJust, maybe) =>
+export const foldMaybe = onNothing => onJust => maybe =>
 	maybe.tag === 'Just' ? onJust(maybe.value) : onNothing()
 
-export const foldResult = (onErr, onOk, result) =>
+export const foldResult = onErr => onOk => result =>
 	result.tag === 'Ok' ? onOk(result.value) : onErr(result.message)
 
 export const tryCatch = fn => arg => {
@@ -556,3 +550,4 @@ export const tryCatch = fn => arg => {
 		return Result.Err(err.message || 'Unknown error')
 	}
 }
+
