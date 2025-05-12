@@ -68,9 +68,14 @@ import { pipe, map, filter, add } from 'nejquery'
 
 const nums = [1, 2, 3, 4]
 
-const filterIsOdd = filter(x => x % 2 === 1)
-const mapIncrement = map(add(1))
+// Partially applied (or curried) functions
+const add1 = add(1)
+const isOdd = x => x % 2 === 1
 
+const filterIsOdd = filter(isOdd)
+const mapIncrement = map(add1)
+
+// Using Pipe for function composition
 const incrementOdds = pipe(filterIsOdd, mapIncrement)
 
 console.log(incrementOdds(nums)) // => [2, 4]
