@@ -45,6 +45,24 @@ Or add manually:
 
 ## 🔧 Usage
 
+Instead of writing imperative code like this:
+
+```js
+const nums = [1, 2, 3, 4];
+const result = [];
+
+for (let i = 0; i < nums.length; i++) {
+  const x = nums[i];
+  if (x % 2 === 1) {
+    result.push(x + 1);
+  }
+}
+
+console.log(result); // [2, 4]
+```
+
+...you can write code declaratively like this:
+
 ```js
 import { pipe, map, filter, add } from 'nejquery'
 
