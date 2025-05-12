@@ -112,6 +112,11 @@ Got a function to propose? Open a PR or an issue — contributions are welcome!
 
 ---
 
+> **Disclaimer:** nejQuery is not affiliated with or endorsed by the jQuery Foundation or OpenJS Foundation.  
+> Plus, I have great respect for jQuery. My grandfather used to use it.
+
+---
+
 ## 📜 License
 
 MIT
