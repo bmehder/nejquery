@@ -97,7 +97,8 @@ export const compact = xs => xs.filter(Boolean)
 
 export const reject = fn => xs => xs.filter(not(fn) ?? identity)
 
-export const reduce = fn => xs => xs.reduce(fn)
+// DEPRECATED
+// export const reduce = fn => xs => xs.reduce(fn)
 
 export const fold = fn => arg => xs => xs.reduce(fn, arg ?? xs[0])
 
@@ -163,17 +164,17 @@ export const joinArray = join('')
 
 export const count = x => xs => xs.filter(_x => _x === x).length
 
-export const keys = xs => xs.keys()
-
 export const getArrayKeys = xs => [...xs.keys()]
 
 export const fill = value => start => end => xs => [...xs].fill(value, start, end)
 
-export const chunk = size => xs =>
-	xs.reduce((acc, _, i, xs) => {
-		i % size === 0 ? (acc = [...acc, slice(i)(i + size)(xs)]) : acc
-		return acc
-	}, [])
+export const chunk = size => xs => {
+	const result = []
+	for (let i = 0; i < xs.length; i += size) {
+		result.push(xs.slice(i, i + size))
+	}
+	return result
+}
 
 export const reverse = xs => xs.toReversed()
 
@@ -183,20 +184,27 @@ export const uniq = xs => [...new Set(xs)]
 
 export const union = x => y => [...new Set([...x, ...y])]
 
-export const intersection = x => y =>
-	[...new Set(x)].filter(_x => new Set(y).has(_x))
+export const intersection = x => y => {
+	const setY = new Set(y)
+	return [...new Set(x)].filter(item => setY.has(item))
+}
 
 export const difference = x => y => x.filter(_x => !y.includes(_x))
 
 export const hasAllElems = (xs1, xs2) => xs1.every(x => xs2.includes(x))
 
-export const shuffle = xs => xs.sort(() => 0.5 - Math.random())
+export const shuffle = xs => {
+	const arr = [...xs]
+	for (let i = arr.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1))
+		;[arr[i], arr[j]] = [arr[j], arr[i]]
+	}
+	return arr
+}
 
 export const toObject = Object.fromEntries
 
 export const spread = x => [...x]
-
-export const shallowCopy = spread
 
 export const partition = fn => xs =>
 	xs.reduce(

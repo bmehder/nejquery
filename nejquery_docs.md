@@ -33,11 +33,13 @@ at(-1)([1, 2, 3]) // => 3
 Splits an array into chunks of a specified size.
 
 ```js
-export const chunk = size => xs =>
-  xs.reduce((acc, _, i, xs) => {
-    i % size === 0 ? (acc = [...acc, xs.slice(i, i + size)]) : acc
-    return acc
-  }, [])
+export const chunk = size => xs => {
+  const result = []
+  for (let i = 0; i < xs.length; i += size) {
+    result.push(xs.slice(i, i + size))
+  }
+  return result
+}
 ```
 
 ```js
@@ -405,12 +407,14 @@ indexOf(3)([1, 2, 3, 2]) // => 2
 Returns a new array containing elements common to both arrays.
 
 ```js
-export const intersection = x => y =>
-  [...new Set(x)].filter(_x => new Set(y).has(_x))
+export const intersection = x => y => {
+  const setY = new Set(y)
+  return [...new Set(x)].filter(item => setY.has(item))
+}
 ```
 
 ```js
-intersection([1, 2, 3])([2, 3, 4]) // => [2, 3]
+intersection([1, 2, 3, 2])([2, 3, 4]) // => [2, 3]
 ```
 
 ---
@@ -471,21 +475,6 @@ export const keep = filter
 
 ```js
 keep(x => x % 2 === 0)([1, 2, 3, 4]) // => [2, 4]
-```
-
----
-
-### `keys`
-
-**Description:**  
-Returns an iterator of the array’s keys (indexes).
-
-```js
-export const keys = xs => xs.keys()
-```
-
-```js
-[...keys(['a', 'b'])] // => [0, 1]
 ```
 
 ---
@@ -570,21 +559,6 @@ push(4)([1, 2, 3]) // => [1, 2, 3, 4]
 
 ---
 
-### `reduce`
-
-**Description:**  
-Applies a reducer function to the array, returning a single result.
-
-```js
-export const reduce = fn => xs => xs.reduce(fn)
-```
-
-```js
-reduce((a, b) => a + b)([1, 2, 3]) // => 6
-```
-
----
-
 ### `reject`
 
 **Description:**  
@@ -630,28 +604,20 @@ second([10, 20, 30]) // => 20
 
 ---
 
-### `shallowCopy`
-
-**Description:**  
-Creates a shallow copy of an array.
-
-```js
-export const shallowCopy = x => [...x]
-```
-
-```js
-shallowCopy([1, 2, 3]) // => [1, 2, 3]
-```
-
----
-
 ### `shuffle`
 
 **Description:**  
-Randomizes the order of elements in an array.
+Randomizes the order of elements in an array using the Fisher–Yates algorithm.
 
 ```js
-export const shuffle = xs => xs.sort(() => 0.5 - Math.random())
+export const shuffle = xs => {
+  const arr = [...xs]
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr
+}
 ```
 
 ```js
