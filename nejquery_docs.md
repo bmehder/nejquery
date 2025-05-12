@@ -559,6 +559,27 @@ push(4)([1, 2, 3]) // => [1, 2, 3, 4]
 
 ---
 
+### `reduce`
+
+**Description:**  
+Applies a reducer function to the array, returning a single result.
+
+> ⚠️ Warning: This version of reduce does not take an initial value.
+It will throw an error on empty arrays.
+For a safer, curried alternative that supports an initial value, use fold instead.
+
+```js
+export const reduce = fn => xs => xs.reduce(fn)
+```
+
+```js
+reduce((a, b) => a + b)([1, 2, 3]) // => 6
+// ⚠️ Will throw on empty array:
+// reduce((a, b) => a + b)([]) // ❌ TypeError
+```
+
+---
+
 ### `reject`
 
 **Description:**  
