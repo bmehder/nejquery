@@ -50,12 +50,12 @@ import { pipe, map, filter, add } from 'nejquery'
 
 const nums = [1, 2, 3, 4]
 
-const doubledOdds = pipe(
-  filter(x => x % 2 === 1),
-  map(add(1))
-)(nums)
+const filterIsOdd = filter(x => x % 2 === 1)
+const mapIncrement = map(add(1))
 
-console.log(doubledOdds) // => [2, 4]
+const doubledOdds = pipe(filterIsOdd, mapIncrement)
+
+console.log(doubledOdds(nums)) // => [2, 4]
 ```
 
 ---
