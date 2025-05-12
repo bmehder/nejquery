@@ -2,7 +2,8 @@
 export const identity = x => x
 
 export const apply = fn => x => fn(x)
-export const thrush = apply
+
+export const thrush = x => fn => fn(x)
 
 export const applyReducer = (acc, fn) => fn(acc)
 
@@ -31,29 +32,7 @@ export const composeState = (state, ...fns) => {
 	return fns.reduce(reducer, state)
 }
 
-export const withSet = (state, composer) => ({
-	updateProp: (prop, value) =>
-		composer({
-			...state,
-			[prop]: value,
-		}),
-})
-
-export const withLogger = obj => ({
-	log: () => {
-		console.log('Object:')
-		Object.getOwnPropertyNames(obj).forEach(prop => {
-			const descriptor = Object.getOwnPropertyDescriptor(obj, prop)
-			if (typeof obj[prop] === 'function') {
-				console.log(`${prop}:`, obj[prop].toString())
-			} else {
-				console.log(`${prop}:`, obj[prop])
-			}
-		})
-
-		return obj
-	},
-})
+export const juxt = fns => x => fns.map(fn => fn(x))
 
 export function curry(fn) {
 	return function curried(...args) {
@@ -80,6 +59,8 @@ export const uncurry =
 // debugging functions
 export const tap = fn => x => (fn(x), identity(x))
 export const tee = tap
+
+export const tapIf = pred => fn => x => (pred(x) ? fn(x) : null, x)
 
 export const log = console.log
 
@@ -111,6 +92,8 @@ export const forEach = fn => xs => xs.forEach(fn ?? identity)
 export const filter = fn => xs => xs.filter(fn ?? identity)
 
 export const keep = filter
+
+export const compact = xs => xs.filter(Boolean)
 
 export const reject = fn => xs => xs.filter(not(fn) ?? identity)
 

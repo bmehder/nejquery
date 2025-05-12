@@ -61,6 +61,22 @@ concat([1, 2])([3, 4]) // => [1, 2, 3, 4]
 
 ---
 
+### `compact`
+
+**Description:**
+Removes all falsy values (`false`, `0`, `''`, `null`, `undefined`, `NaN`) from an array.
+
+```js
+export const compact = xs => xs.filter(Boolean)
+```
+
+```js
+compact([0, 1, false, 2, '', 3]) // => [1, 2, 3]
+```
+
+---
+
+
 ### `cons`
 
 **Description:**  
@@ -1597,7 +1613,7 @@ truncateWords(2)('This is a test string') // => 'This is'
 ### `apply`
 
 **Description:**  
-Applies a value to a function. Alias of `thrush`.
+Applies a value to a function.
 
 ```js
 export const apply = fn => x => fn(x)
@@ -1774,14 +1790,14 @@ pipe(x => x + 1, x => x * 2)(3) // => 8
 ### `thrush`
 
 **Description:**  
-Alias of `apply`. Applies a value to a function.
+Applies a value to a function (value-first style). Often used for piping a value into a composed function.
 
 ```js
-export const thrush = apply
+export const thrush = x => fn => fn(x)
 ```
 
 ```js
-thrush(x => x * 10)(2) // => 20
+thrush(2)(x => x * 10) // => 20
 ```
 
 ---
@@ -1808,54 +1824,21 @@ uncurry(curried)(1, 2, 3) // => 6
 
 ---
 
-### `withLogger`
+### `juxt`
 
 **Description:**  
-Adds a `.log()` method to an object for debugging.
+Applies multiple functions to the same input and collects the results in an array. Useful for running several computations in parallel on a single value.
 
 ```js
-export const withLogger = obj => ({
-  log: () => {
-    console.log('Object:')
-    Object.getOwnPropertyNames(obj).forEach(prop => {
-      const descriptor = Object.getOwnPropertyDescriptor(obj, prop)
-      if (typeof obj[prop] === 'function') {
-        console.log(`${prop}:`, obj[prop].toString())
-      } else {
-        console.log(`${prop}:`, obj[prop])
-      }
-    })
-    return obj
-  },
-})
+export const juxt = fns => x => fns.map(fn => fn(x))
 ```
 
 ```js
-withLogger({ name: 'Alice' }).log()
-// logs object properties
-```
-
----
-
-### `withSet`
-
-**Description:**  
-Adds an `updateProp` method to a state object for patching state.
-
-```js
-export const withSet = (state, composer) => ({
-  updateProp: (prop, value) =>
-    composer({
-      ...state,
-      [prop]: value,
-    }),
-})
-```
-
-```js
-const logState = x => console.log(x)
-withSet({ count: 0 }, logState).updateProp('count', 1)
-// logs: { count: 1 }
+juxt([
+  x => x + 1,
+  x => x * 2,
+  x => `Value: ${x}`
+])(3) // => [4, 6, "Value: 3"]
 ```
 
 ---
@@ -2039,6 +2022,21 @@ export const tee = tap
 
 ```js
 tee(console.log)('hello') // logs 'hello' and returns it
+```
+
+---
+
+### `tapIf`
+
+**Description:**  
+Runs a side-effect function if a predicate is true. Returns the original input unchanged.
+
+```js
+export const tapIf = pred => fn => x => (pred(x) && fn(x), x)
+```
+
+```js
+tapIf(x => x > 1)(console.log)(2) // logs: 2, returns 2
 ```
 
 ---
