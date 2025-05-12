@@ -53,9 +53,9 @@ const nums = [1, 2, 3, 4]
 const filterIsOdd = filter(x => x % 2 === 1)
 const mapIncrement = map(add(1))
 
-const doubledOdds = pipe(filterIsOdd, mapIncrement)
+const incrementOdds = pipe(filterIsOdd, mapIncrement)
 
-console.log(doubledOdds(nums)) // => [2, 4]
+console.log(incrementOdds(nums)) // => [2, 4]
 ```
 
 ---
