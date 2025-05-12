@@ -225,9 +225,9 @@ export const unzip = xs => xs.reduce(doUnzip, [[], []])
 export const intersperse = arg => xs => xs.flatMap(x => [x, arg]).slice(0, -1)
 
 // Number functions
-export const inc = x => (x += 1)
+export const inc = x => x + 1
 
-export const dec = x => (x -= 1)
+export const dec = x => x - 1
 
 export const add = x => y => x + y
 
@@ -310,7 +310,7 @@ export const padStart = len => arg => x => x.padStart(len, arg)
 
 export const padEnd = len => arg => x => x.padEnd(len, arg)
 
-export const truncateWords = arg => x => x.split(' ').splice(0, arg).join(' ')
+export const truncateWords = arg => x => x.split(' ').slice(0, arg).join(' ')
 
 export const getLength = xs => xs.length
 

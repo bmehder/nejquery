@@ -855,7 +855,7 @@ ceil(1.2) // => 2
 Decrements a number by 1.
 
 ```js
-export const dec = x => (x -= 1)
+export const dec = x => x - 1
 ```
 
 ```js
@@ -915,7 +915,7 @@ floor(1.8) // => 1
 Increments a number by 1.
 
 ```js
-export const inc = x => (x += 1)
+export const inc = x => x + 1
 ```
 
 ```js
@@ -1583,7 +1583,7 @@ trim('  hello ') // => 'hello'
 Truncates a string to the first `n` words.
 
 ```js
-export const truncateWords = arg => x => x.split(' ').splice(0, arg).join(' ')
+export const truncateWords = arg => x => x.split(' ').slice(0, arg).join(' ')
 ```
 
 ```js
@@ -2372,7 +2372,7 @@ isNullish(null) // => true
 ### `isNumber`
 
 **Description:**  
-Returns true if the value is a number.
+Returns true if the value is a number. Also returns true for numeric string.
 
 ```js
 export const isNumber = x => !isNaN(+x)
