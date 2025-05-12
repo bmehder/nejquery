@@ -98,7 +98,7 @@ export const compact = xs => xs.filter(Boolean)
 export const reject = fn => xs => xs.filter(not(fn) ?? identity)
 
 // DEPRECATED
-// export const reduce = fn => xs => xs.reduce(fn)
+export const reduce = fn => xs => xs.reduce(fn)
 
 export const fold = fn => arg => xs => xs.reduce(fn, arg ?? xs[0])
 
