@@ -449,6 +449,15 @@ export const select = (...xs) => xs.map(x => document.querySelector(x))
 
 export const selectAll = (...xs) => xs.map(x => document.querySelectorAll(x))
 
+export const guard = pairs => input => {
+	for (const [predicate, result] of pairs) {
+		if (predicate(input)) {
+			return typeof result === 'function' ? result(input) : result
+		}
+	}
+	throw new Error('No guard matched')
+}
+
 export const createADT = spec =>
 	Object.fromEntries(
 		Object.entries(spec).map(([tag, fieldNames]) => [

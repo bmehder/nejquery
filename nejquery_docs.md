@@ -2668,6 +2668,48 @@ ifElse(x => x > 0)(x => 'yes')(x => 'no')(1) // => 'yes'
 
 ---
 
+### `guard`
+
+**Description:**  
+Evaluates a list of [predicate, result] pairs. Returns the first result whose predicate returns true. Supports both eager values (static results) and lazy result functions.
+
+```js
+export const guard = pairs => input => {
+  for (const [predicate, result] of pairs) {
+    if (predicate(input)) {
+      return typeof result === 'function' ? result(input) : result
+    }
+  }
+  throw new Error('No guard matched')
+}
+```
+
+```js
+const describe = guard([
+  [x => x < 0,     'negative'],
+  [x => x === 0,   'zero'],
+  [() => true,     'positive']
+]);
+
+describe(-5); // => "negative"
+describe(0);  // => "zero"
+describe(42); // => "positive"
+
+const label = guard([
+  [x => x < 0,     x => `neg ${x}`],
+  [x => x === 0,   () => 'zero'],
+  [() => true,     x => `pos ${x}`]
+]);
+
+label(-3); // => "neg -3"
+label(0);  // => "zero"
+label(4);  // => "pos 4"
+```
+
+---
+
+
+
 ### `nab`
 
 **Description:**  
