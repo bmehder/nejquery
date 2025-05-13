@@ -68,10 +68,10 @@ import { pipe, map, filter, add } from 'nejquery'
 
 const nums = [1, 2, 3, 4]
 
-// Partially applied (or curried) functions
-const add1 = add(1)
 const isOdd = x => x % 2 === 1
 
+// Partially applied functions
+const add1 = add(1)
 const filterIsOdd = filter(isOdd)
 const mapIncrement = map(add1)
 
