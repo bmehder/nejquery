@@ -1403,7 +1403,7 @@ replaceAll('a')('x')('banana') // => 'bxnxnx'
 Reverses the characters in a string.
 
 ```js
-export const reverseChars = x => x.toReversed().join('')
+export const reverseChars = x => x.split('').reverse().join('')
 ```
 
 ```js
@@ -1737,21 +1737,6 @@ export const mapAll =
 
 ```js
 mapAll(x => x + 1, x => x * 2)(3) // => [4, 6]
-```
-
----
-
-### `partial`
-
-**Description:**  
-Alias of `curry`. Allows partial application.
-
-```js
-export const partial = curry
-```
-
-```js
-partial((a, b) => a + b)(1)(2) // => 3
 ```
 
 ---
@@ -2731,11 +2716,7 @@ export const nab = async url => await (await fetch(url)).json()
 Delays invocation of a function.
 
 ```js
-export const delay =
-	ms =>
-	fn =>
-	(...args) =>
-		setTimeout(fn, +ms ?? 0, ...args)
+export const delay = ms => new Promise(res => setTimeout(res, +ms ?? 0))
 ```
 
 ```js

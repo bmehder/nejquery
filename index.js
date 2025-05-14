@@ -46,8 +46,6 @@ export function curry(fn) {
 	}
 }
 
-export const partial = curry
-
 export const uncurry =
 	fn =>
 	(...args) =>
@@ -304,7 +302,7 @@ export const toLocaleLowerCase = x => x.toLocaleLowerCase()
 
 export const toLocaleUpperCase = x => x.toLocaleUpperCase()
 
-export const reverseChars = x => x.toReversed().join('')
+export const reverseChars = x => x.split('').reverse().join('')
 
 export const padStart = len => arg => x => x.padStart(len, arg)
 
@@ -429,11 +427,7 @@ export const ifElse = p => f => g => x => p(x) ? f(x) : g(x)
 
 export const nab = async url => await (await fetch(url)).json()
 
-export const delay =
-	ms =>
-	fn =>
-	(...args) =>
-		setTimeout(fn, +ms ?? 0, ...args)
+export const delay = ms => new Promise(res => setTimeout(res, +ms ?? 0))
 
 export const nap = ms => new Promise(resolve => setTimeout(resolve, ms))
 

@@ -1,12 +1,14 @@
 {
 	"name": "nejquery",
-	"version": "5.4.0",
+	"version": "5.4.1",
 	"author": "bmehder",
 	"private": false,
 	"main": "index.js",
 	"type": "module",
-	"scripts": {},
 	"meta": {},
+	"scripts": {
+		"test": "node tests/index.test.js"
+	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/bmehder/nejquery.git"
