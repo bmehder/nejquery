@@ -105,12 +105,18 @@ Full documentation is available in [**nejquery_docs.md**](./nejquery_docs.md)
 Use `createADT` to build expressive data structures:
 
 ```js
-const Option = createADT({ Some: ['value'], None: [] })
-const maybeValue = Option.Some(42)
+const Vehicle = createADT({
+  Car: ['make', 'model'],
+  Bicycle: ['type'],
+  Truck: ['make', 'payloadCapacity']
+})
 
-match(maybeValue, {
-  Some: ({ value }) => console.log(value),
-  None: () => console.log('Nothing here'),
+const myVehicle = Vehicle.Car('Toyota', 'Camry')
+
+match(myVehicle, {
+  Car: (make, model) => console.log(`Car: ${make} ${model}`),
+  Bicycle: (type) => console.log(`Bicycle: ${type}`),
+  Truck: (make, payloadCapacity) => console.log(`Truck: ${make}, Payload: ${payloadCapacity}kg`)
 })
 ```
 
