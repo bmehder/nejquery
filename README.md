@@ -4,8 +4,6 @@
 ![license](https://img.shields.io/npm/l/nejquery)
 ![minified size](https://img.shields.io/bundlephobia/min/nejquery)
 
-A functional JavaScript utility library
-
 **nejQuery** is a lightweight, functional JavaScript utility library — inspired by Ramda, Lodash, and FP principles — with a focus on **data-last**, **curried**, and **composable** functions. It offers a rich set of helpers for arrays, strings, numbers, objects, predicates, ADTs, and more.
 
 > It's like Ramda with fewer gotchas, Lodash with less weight, and jQuery with... well, no jQuery.

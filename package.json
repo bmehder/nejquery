@@ -28,5 +28,6 @@
 		"functional javascript",
 		"immutable"
 	],
-	"license": "MIT"
+	"license": "MIT",
+	"description": "A lightweight functional JavaScript utility library inspired by Ramda, Lodash, and FP principles."
 }
