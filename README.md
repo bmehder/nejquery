@@ -114,9 +114,9 @@ const Vehicle = createADT({
 const myVehicle = Vehicle.Car('Toyota', 'Camry')
 
 match(myVehicle, {
-  Car: (make, model) => console.log(`Car: ${make} ${model}`),
-  Bicycle: (type) => console.log(`Bicycle: ${type}`),
-  Truck: (make, payloadCapacity) => console.log(`Truck: ${make}, Payload: ${payloadCapacity}kg`)
+  Car: ({make, model}) => console.log(`Car: ${make} ${model}`),
+  Bicycle: ({type}) => console.log(`Bicycle: ${type}`),
+  Truck: ({make, payloadCapacity}) => console.log(`Truck: ${make}, Payload: ${payloadCapacity}kg`)
 })
 ```
 
