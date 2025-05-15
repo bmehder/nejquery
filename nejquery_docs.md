@@ -1677,7 +1677,7 @@ export const composeWithState = (state, ...fns) => {
 
 ```js
 const addFoo = state => () => ({ foo: 1 })
-composeState({}, addFoo) // => { foo: 1 }
+composeWithState({}, addFoo) // => { foo: 1 }
 ```
 
 ---
