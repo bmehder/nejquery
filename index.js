@@ -24,10 +24,10 @@ export const mapAll =
 
 export const applyToIndex = fn => (_, i) => fn(i)
 
-export const composeState = (state, ...fns) => {
+export const composeWithState = (state, ...fns) => {
 	const reducer = (obj, fn) => ({
 		...obj,
-		...fn(obj, newState => composeState(newState, ...fns)),
+		...fn(obj, newState => composeWithState(newState, ...fns)),
 	})
 	return fns.reduce(reducer, state)
 }

@@ -1660,16 +1660,16 @@ compose(x => x + 1, x => x * 2)(3) // => 7
 
 ---
 
-### `composeState`
+### `composeWithState`
 
 **Description:**  
 Recursively applies state decorators to a state object.
 
 ```js
-export const composeState = (state, ...fns) => {
+export const composeWithState = (state, ...fns) => {
   const reducer = (obj, fn) => ({
     ...obj,
-    ...fn(obj, newState => composeState(newState, ...fns)),
+    ...fn(obj, newState => composeWithState(newState, ...fns)),
   })
   return fns.reduce(reducer, state)
 }
