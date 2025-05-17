@@ -1600,7 +1600,7 @@ truncateWords(2)('This is a test string') // => 'This is'
 ### `apply`
 
 **Description:**  
-Applies a value to a function.
+Applies a function to a value.
 
 ```js
 export const apply = fn => x => fn(x)
@@ -1762,7 +1762,7 @@ pipe(x => x + 1, x => x * 2)(3) // => 8
 ### `thrush`
 
 **Description:**  
-Applies a value to a function (value-first style). Often used for piping a value into a composed function.
+Applies a function to a value (value-first style). Often used for piping a value into a composed function.
 
 ```js
 export const thrush = x => fn => fn(x)
