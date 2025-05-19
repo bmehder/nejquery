@@ -2354,17 +2354,17 @@ isNullish(null) // => true
 
 ---
 
-### `notIsNullish`
+### `isNotNullish`
 
 **Description:**  
 Returns true if the value is not `null` or `undefined`.
 
 ```js
-export const notIsNullish = not(isNullish)
+export const isNotNullish = not(isNullish)
 ```
 
 ```js
-notIsNullish(42) // => true
+isNotNullish(42) // => true
 ```
 
 ---
@@ -3031,7 +3031,7 @@ Wraps a non-nullish value in a `Maybe.Just`. Returns `Maybe.Nothing` for `null` 
 
 ```js
 export const toMaybe = val =>
-  notIsNullish(val) ? Maybe.Just(val) : Maybe.Nothing()
+  isNotNullish(val) ? Maybe.Just(val) : Maybe.Nothing()
 ```
 
 ```js

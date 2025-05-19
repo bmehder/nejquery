@@ -376,7 +376,7 @@ export const isNotEmptyString = str => str.length > 0
 
 export const isNullish = x => x == null
 
-export const notIsNullish = not(isNullish)
+export const isNotNullish = not(isNullish)
 
 export const isSet = x => x instanceof Set
 
@@ -515,7 +515,7 @@ export const flatMapResult = fn => result =>
 export const flatMapMaybe = fn => maybe =>
 	maybe.tag === 'Just' ? fn(maybe.value) : maybe
 
-export const toMaybe = val => (notIsNullish(val) ? Maybe.Just(val) : Maybe.Nothing())
+export const toMaybe = val => (isNotNullish(val) ? Maybe.Just(val) : Maybe.Nothing())
 
 export const unwrap = fallback => adt => {
 	const { tag } = adt
