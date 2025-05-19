@@ -513,6 +513,8 @@ export const flatMapResult = fn => result =>
 export const flatMapMaybe = fn => maybe =>
 	maybe.tag === 'Just' ? fn(maybe.value) : maybe
 
+export const toMaybe = val => (notIsNullish(val) ? Maybe.Just(val) : Maybe.Nothing())
+
 export const unwrap = fallback => adt => {
 	const { tag } = adt
 	if (tag === 'Just' || tag === 'Ok') return adt.value

@@ -3009,6 +3009,24 @@ flatMapMaybe(x => Maybe.Just(x * 2))(Maybe.Just(2)) // => Just(4)
 
 ---
 
+### `toMaybe`
+
+**Description:**  
+Wraps a non-nullish value in a `Maybe.Just`. Returns `Maybe.Nothing` for `null` or `undefined`.
+
+```js
+export const toMaybe = val =>
+  notIsNullish(val) ? Maybe.Just(val) : Maybe.Nothing()
+```
+
+```js
+toMaybe(42)           // => Just(42)
+toMaybe(null)         // => Nothing
+toMaybe(undefined)    // => Nothing
+```
+
+---
+
 ### `unwrap`
 
 **Description:**  
