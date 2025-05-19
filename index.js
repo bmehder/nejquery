@@ -376,6 +376,8 @@ export const isNotEmptyString = str => str.length > 0
 
 export const isNullish = x => x == null
 
+export const notIsNullish = not(isNullish)
+
 export const isSet = x => x instanceof Set
 
 export const isMap = x => x instanceof Map

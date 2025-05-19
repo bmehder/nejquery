@@ -2354,6 +2354,21 @@ isNullish(null) // => true
 
 ---
 
+### `notIsNullish`
+
+**Description:**  
+Returns true if the value is not `null` or `undefined`.
+
+```js
+export const notIsNullish = not(isNullish)
+```
+
+```js
+notIsNullish(42) // => true
+```
+
+---
+
 ### `isNumber`
 
 **Description:**  
