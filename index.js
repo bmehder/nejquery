@@ -390,6 +390,8 @@ export const and = (a, b) => a && b
 export const pluck = x => obj => obj[x]
 export const getProp = pluck
 
+export const pick = keys => obj => Object.fromEntries(keys.map(key => [key, obj[key]]))
+
 export const groupBy = fn => obj => Object.groupBy(obj, fn)
 
 export const groupByProp = x => groupBy(pluck(x))

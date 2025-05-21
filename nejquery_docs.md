@@ -1215,6 +1215,22 @@ pluck('id')({ id: 42 }) // => 42
 
 ---
 
+### `pick`
+
+**Description:**  
+Returns a new object containing only the specified keys from the input object.
+
+```js
+export const pick = keys => obj => Object.fromEntries(keys.map(key => [key, obj[key]]))
+```
+
+```js
+pick(['id', 'name'])({ id: 42, name: 'Lando', age: 23 })
+// => { id: 42, name: 'Lando' }
+```
+
+---
+
 ### `toArray`
 
 **Description:**  
