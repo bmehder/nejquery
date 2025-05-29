@@ -3008,6 +3008,52 @@ mapMaybe(x => x * 2)(Maybe.Just(2)) // => Just(4)
 
 ---
 
+---
+
+### `apMaybe`
+
+**Description:**  
+Applies a function wrapped in `Just` to a value wrapped in `Just`.  
+If either is `Nothing`, returns `Nothing`.
+
+```js
+export const apMaybe = maybeFn => maybeVal =>
+	isJust(maybeFn) && isJust(maybeVal)
+		? Maybe.Just(maybeFn.value(maybeVal.value))
+		: Maybe.Nothing()
+
+const add = x => y => x + y
+
+apMaybe(mapMaybe(add)(Maybe.Just(2)))(Maybe.Just(3)) // => Just(5)
+apMaybe(Maybe.Nothing())(Maybe.Just(3))             // => Nothing
+apMaybe(Maybe.Just(add(2)))(Maybe.Nothing())        // => Nothing
+```
+
+---
+
+### `apResult`
+
+**Description:**  
+Applies a function wrapped in `Ok` to a value wrapped in `Ok`.  
+If either is `Err`, returns the first `Err`.
+
+```js
+export const apResult = resultFn => resultVal =>
+	isOk(resultFn) && isOk(resultVal)
+		? Result.Ok(resultFn.value(resultVal.value))
+		: isErr(resultFn)
+		? resultFn
+		: resultVal
+
+const add = x => y => x + y
+
+apResult(mapResult(add)(Result.Ok(2)))(Result.Ok(3))       // => Ok(5)
+apResult(Result.Err('bad fn'))(Result.Ok(3))               // => Err('bad fn')
+apResult(Result.Ok(add(2)))(Result.Err('bad val'))         // => Err('bad val')
+```
+
+---
+
 ### `flatMapResult`
 
 **Description:**  

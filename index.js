@@ -511,6 +511,18 @@ export const mapResult = fn => result =>
 export const mapMaybe = fn => maybe =>
 	maybe.tag === 'Just' ? Maybe.Just(fn(maybe.value)) : maybe
 
+export const apMaybe = maybeFn => maybeVal =>
+	isJust(maybeFn) && isJust(maybeVal)
+		? Maybe.Just(maybeFn.value(maybeVal.value))
+		: Maybe.Nothing()
+
+export const apResult = resultFn => resultVal =>
+	isOk(resultFn) && isOk(resultVal)
+		? Result.Ok(resultFn.value(resultVal.value))
+		: isErr(resultFn)
+		? resultFn
+		: resultVal
+
 export const flatMapResult = fn => result =>
 	result.tag === 'Ok' ? fn(result.value) : result
 
