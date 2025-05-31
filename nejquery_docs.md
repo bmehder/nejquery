@@ -653,7 +653,7 @@ shuffle([1, 2, 3]) // => [2, 3, 1] (random order)
 Extracts a section of the array between two indexes.
 
 ```js
-export const slice = start => end => strOrNum => strOrNum.slice(start, end)
+export const slice = start => end => xs => xs.slice(start, end)
 ```
 
 ```js

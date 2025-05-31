@@ -100,7 +100,7 @@ export const reduce = fn => xs => xs.reduce(fn)
 
 export const fold = fn => arg => xs => xs.reduce(fn, arg ?? xs[0])
 
-export const slice = start => end => strOrNum => strOrNum.slice(start, end)
+export const slice = start => end => xs => xs.slice(start, end)
 
 export const take = x => xs => xs.slice(0, x)
 
