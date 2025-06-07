@@ -524,6 +524,33 @@ map(x => x * 2)([1, 2, 3]) // => [2, 4, 6]
 
 ---
 
+### `mapChain`
+
+**Description:**  
+Applies multiple transformation functions in sequence using `.map()` for each.  
+Equivalent to chaining multiple `.map(...)` calls, but written in a compact, composable form.
+
+```js
+const mapChain = (...fns) => xs =>
+  fns.reduce((acc, fn) => acc.map(fn), xs)
+```
+
+```js
+const double = x => x * 2
+const square = x => x * x
+const negate = x => -x
+
+const transform = mapChain(double, square, negate)
+
+transform([1, 2, 3]) // → [-4, -16, -36]
+
+// Explanation:
+// [1, 2, 3]
+// → [2, 4, 6]        // after double
+// → [4, 16, 36]      // after square
+// → [-4, -16, -36]   // after negate
+```
+
 ### `partition`
 
 **Description:**  

@@ -85,6 +85,11 @@ export const getType = x => typeof x
 // Array functions
 export const map = fn => xs => xs.map(fn ?? identity)
 
+export const mapChain =
+	(...fns) =>
+	xs =>
+		fns.reduce((acc, fn) => acc.map(fn), xs)
+
 export const forEach = fn => xs => xs.forEach(fn ?? identity)
 
 export const filter = fn => xs => xs.filter(fn ?? identity)
