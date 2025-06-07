@@ -399,6 +399,7 @@ export const and = (a, b) => a && b
 // Objects
 export const pluck = x => obj => obj[x]
 export const getProp = pluck
+export const dot = pluck
 
 export const pick = keys => obj => Object.fromEntries(keys.map(key => [key, obj[key]]))
 

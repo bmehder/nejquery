@@ -1188,7 +1188,7 @@ getKeys({ a: 1, b: 2 }) // => ['a', 'b']
 ### `getProp`
 
 **Description:**  
-Returns the value of a specified property from an object.
+Returns the value of a specified property from an object. Alias of pluck.
 
 ```js
 export const getProp = x => obj => obj[x]
@@ -1196,6 +1196,21 @@ export const getProp = x => obj => obj[x]
 
 ```js
 getProp('name')({ name: 'Alice' }) // => 'Alice'
+```
+
+---
+
+### `dot`
+
+**Description:**  
+Returns the value of a specified property from an object. Alias of pluck.
+
+```js
+export const dot = pluck
+```
+
+```js
+dot('name')({ name: 'Alice' }) // => 'Alice'
 ```
 
 ---
@@ -1252,7 +1267,7 @@ groupByProp('type')([
 ### `pluck`
 
 **Description:**  
-Returns the value of a specified property from an object. Alias of `getProp`.
+Returns the value of a specified property from an object.
 
 ```js
 export const pluck = x => obj => obj[x]
