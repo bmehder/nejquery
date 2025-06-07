@@ -9,7 +9,6 @@
 - [Predicates](#predicates)
 - [Helpers](#helpers)
 
-
 ## Array functions
 
 ### `at`
@@ -34,11 +33,11 @@ Splits an array into chunks of a specified size.
 
 ```js
 export const chunk = size => xs => {
-  const result = []
-  for (let i = 0; i < xs.length; i += size) {
-    result.push(xs.slice(i, i + size))
-  }
-  return result
+	const result = []
+	for (let i = 0; i < xs.length; i += size) {
+		result.push(xs.slice(i, i + size))
+	}
+	return result
 }
 ```
 
@@ -78,7 +77,6 @@ compact([0, 1, false, 2, '', 3]) // => [1, 2, 3]
 
 ---
 
-
 ### `cons`
 
 **Description:**  
@@ -108,6 +106,7 @@ count(2)([1, 2, 2, 3]) // => 2
 ```
 
 ---
+
 ### `difference`
 
 **Description:**  
@@ -175,8 +174,8 @@ Returns all indexes of elements that match the given value.
 
 ```js
 export const findAllIndexes = arg => xs => {
-  const folder = (acc, x, i) => (arg === x ? [...acc, i] : acc)
-  return fold(folder)([])(xs)
+	const folder = (acc, x, i) => (arg === x ? [...acc, i] : acc)
+	return fold(folder)([])(xs)
 }
 ```
 
@@ -283,10 +282,10 @@ Recursively flattens a deeply nested array.
 
 ```js
 export const flattenAll = xs => {
-  const fn = (acc, item) =>
-    Array.isArray(item) ? [...acc, ...flattenAll(item)] : [...acc, item]
+	const fn = (acc, item) =>
+		Array.isArray(item) ? [...acc, ...flattenAll(item)] : [...acc, item]
 
-  return fold(fn)([])(xs)
+	return fold(fn)([])(xs)
 }
 ```
 
@@ -326,6 +325,7 @@ forEach(console.log)([1, 2, 3])
 ```
 
 ---
+
 ### `getArrayKeys`
 
 **Description:**  
@@ -408,8 +408,8 @@ Returns a new array containing elements common to both arrays.
 
 ```js
 export const intersection = x => y => {
-  const setY = new Set(y)
-  return [...new Set(x)].filter(item => setY.has(item))
+	const setY = new Set(y)
+	return [...new Set(x)].filter(item => setY.has(item))
 }
 ```
 
@@ -531,11 +531,11 @@ Splits an array into two groups: those that satisfy the predicate and those that
 
 ```js
 export const partition = fn => xs =>
-  xs.reduce(
-    (acc, x) =>
-      fn(x) ? [[...acc[0], x], [...acc[1]]] : [[...acc[0]], [...acc[1], x]],
-    [[], []]
-  )
+	xs.reduce(
+		(acc, x) =>
+			fn(x) ? [[...acc[0], x], [...acc[1]]] : [[...acc[0]], [...acc[1], x]],
+		[[], []]
+	)
 ```
 
 ```js
@@ -565,8 +565,8 @@ push(4)([1, 2, 3]) // => [1, 2, 3, 4]
 Applies a reducer function to the array, returning a single result.
 
 > ⚠️ Warning: This version of reduce does not take an initial value.
-It will throw an error on empty arrays.
-For a safer, curried alternative that supports an initial value, use fold instead.
+> It will throw an error on empty arrays.
+> For a safer, curried alternative that supports an initial value, use fold instead.
 
 ```js
 export const reduce = fn => xs => xs.reduce(fn)
@@ -591,6 +591,48 @@ export const reject = fn => xs => xs.filter(not(fn) ?? identity)
 
 ```js
 reject(x => x > 1)([1, 2, 3]) // => [1]
+```
+
+---
+
+### `allPass`
+
+**Description:**  
+Returns a new predicate function that returns `true` only if **all** of the provided predicates return true for the same input value.
+
+```js
+const allPass = (...predicates) => x =>
+  predicates.every(p => p(x))
+```
+
+```js
+const isEven = x => x % 2 === 0
+const isPositive = x => x > 0
+
+const isEvenAndPositive = allPass(isEven, isPositive)
+
+[2, -2, 3, 4].filter(isEvenAndPositive) // → [2, 4]
+```
+
+---
+
+### `anyPass`
+
+**Description:**  
+Returns a new predicate function that returns `true` if **any** of the provided predicates return true for the same input value.
+
+```js
+const anyPass = (...predicates) => x =>
+  predicates.some(p => p(x))
+```
+
+```js
+const isNegative = x => x < 0
+const isZero = x => x === 0
+
+const isZeroOrNegative = anyPass(isNegative, isZero)
+
+[-2, 0, 1, 2].filter(isZeroOrNegative) // → [-2, 0]
 ```
 
 ---
@@ -632,12 +674,12 @@ Randomizes the order of elements in an array using the Fisher–Yates algorithm.
 
 ```js
 export const shuffle = xs => {
-  const arr = [...xs]
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[arr[i], arr[j]] = [arr[j], arr[i]]
-  }
-  return arr
+	const arr = [...xs]
+	for (let i = arr.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1))
+		;[arr[i], arr[j]] = [arr[j], arr[i]]
+	}
+	return arr
 }
 ```
 
@@ -747,7 +789,10 @@ export const toObject = Object.fromEntries
 ```
 
 ```js
-toObject([['a', 1], ['b', 2]]) // => { a: 1, b: 2 }
+toObject([
+	['a', 1],
+	['b', 2],
+]) // => { a: 1, b: 2 }
 ```
 
 ---
@@ -789,15 +834,19 @@ Converts an array of pairs into two arrays of firsts and seconds.
 
 ```js
 const doUnzip = ([xs, ys], [x, y]) => [
-  [...xs, x],
-  [...ys, y],
+	[...xs, x],
+	[...ys, y],
 ]
 
 export const unzip = xs => xs.reduce(doUnzip, [[], []])
 ```
 
 ```js
-unzip([[1, 'a'], [2, 'b'], [3, 'c']]) // => [[1, 2, 3], ['a', 'b', 'c']]
+unzip([
+	[1, 'a'],
+	[2, 'b'],
+	[3, 'c'],
+]) // => [[1, 2, 3], ['a', 'b', 'c']]
 ```
 
 ---
@@ -1192,9 +1241,9 @@ export const groupByProp = x => groupBy(getProp(x))
 
 ```js
 groupByProp('type')([
-  { type: 'fruit', name: 'apple' },
-  { type: 'vegetable', name: 'carrot' },
-  { type: 'fruit', name: 'banana' }
+	{ type: 'fruit', name: 'apple' },
+	{ type: 'vegetable', name: 'carrot' },
+	{ type: 'fruit', name: 'banana' },
 ]) // => { fruit: [...], vegetable: [...] }
 ```
 
@@ -1221,7 +1270,8 @@ pluck('id')({ id: 42 }) // => 42
 Returns a new object containing only the specified keys from the input object.
 
 ```js
-export const pick = keys => obj => Object.fromEntries(keys.map(key => [key, obj[key]]))
+export const pick = keys => obj =>
+	Object.fromEntries(keys.map(key => [key, obj[key]]))
 ```
 
 ```js
@@ -1608,9 +1658,6 @@ truncateWords(2)('This is a test string') // => 'This is'
 
 ---
 
-
-
-
 ## Utils
 
 ### `apply`
@@ -1653,7 +1700,7 @@ export const applyToIndex = fn => (_, i) => fn(i)
 ```
 
 ```js
-[0, 0, 0].map(applyToIndex(i => i * 2)) // => [0, 2, 4]
+;[0, 0, 0].map(applyToIndex(i => i * 2)) // => [0, 2, 4]
 ```
 
 ---
@@ -1665,13 +1712,16 @@ Right-to-left function composition.
 
 ```js
 export const compose =
-  (...fns) =>
-  x =>
-    fns.reduceRight(applyReducer, x)
+	(...fns) =>
+	x =>
+		fns.reduceRight(applyReducer, x)
 ```
 
 ```js
-compose(x => x + 1, x => x * 2)(3) // => 7
+compose(
+	x => x + 1,
+	x => x * 2
+)(3) // => 7
 ```
 
 ---
@@ -1683,11 +1733,11 @@ Recursively applies state decorators to a state object.
 
 ```js
 export const composeWithState = (state, ...fns) => {
-  const reducer = (obj, fn) => ({
-    ...obj,
-    ...fn(obj, newState => composeWithState(newState, ...fns)),
-  })
-  return fns.reduce(reducer, state)
+	const reducer = (obj, fn) => ({
+		...obj,
+		...fn(obj, newState => composeWithState(newState, ...fns)),
+	})
+	return fns.reduce(reducer, state)
 }
 ```
 
@@ -1705,15 +1755,15 @@ Transforms a multi-arg function into curried form.
 
 ```js
 export function curry(fn) {
-  return function curried(...args) {
-    if (args.length >= fn.length) {
-      return fn.apply(this, args)
-    } else {
-      return function (...args2) {
-        return curried.apply(this, args.concat(args2))
-      }
-    }
-  }
+	return function curried(...args) {
+		if (args.length >= fn.length) {
+			return fn.apply(this, args)
+		} else {
+			return function (...args2) {
+				return curried.apply(this, args.concat(args2))
+			}
+		}
+	}
 }
 ```
 
@@ -1746,13 +1796,16 @@ Applies a list of functions to the same input.
 
 ```js
 export const mapAll =
-  (...fns) =>
-  x =>
-    fns.map(fn => fn(x))
+	(...fns) =>
+	x =>
+		fns.map(fn => fn(x))
 ```
 
 ```js
-mapAll(x => x + 1, x => x * 2)(3) // => [4, 6]
+mapAll(
+	x => x + 1,
+	x => x * 2
+)(3) // => [4, 6]
 ```
 
 ---
@@ -1764,13 +1817,16 @@ Left-to-right function composition.
 
 ```js
 export const pipe =
-  (...fns) =>
-  x =>
-    fns.reduce(applyReducer, x)
+	(...fns) =>
+	x =>
+		fns.reduce(applyReducer, x)
 ```
 
 ```js
-pipe(x => x + 1, x => x * 2)(3) // => 8
+pipe(
+	x => x + 1,
+	x => x * 2
+)(3) // => 8
 ```
 
 ---
@@ -1797,12 +1853,12 @@ Transforms a curried function into a variadic function.
 
 ```js
 export const uncurry =
-  fn =>
-  (...args) =>
-    (
-      _fn => _args =>
-        _args.reduce((_f, arg) => _f(arg), _fn)
-    )(fn)(args)
+	fn =>
+	(...args) =>
+		(
+			_fn => _args =>
+				_args.reduce((_f, arg) => _f(arg), _fn)
+		)(fn)(args)
 ```
 
 ```js
@@ -1822,15 +1878,10 @@ export const juxt = fns => x => fns.map(fn => fn(x))
 ```
 
 ```js
-juxt([
-  x => x + 1,
-  x => x * 2,
-  x => `Value: ${x}`
-])(3) // => [4, 6, "Value: 3"]
+juxt([x => x + 1, x => x * 2, x => `Value: ${x}`])(3) // => [4, 6, "Value: 3"]
 ```
 
 ---
-
 
 ## debugging functions
 
@@ -2067,17 +2118,17 @@ True('anything') // => true
 **Description:**  
 Returns `false`, ignoring any input.
 
-```js
+````js
 export const False = _ => false
 
 ### `and`
 
-**Description:**  
+**Description:**
 Logical AND operation.
 
 ```js
 export const and = (a, b) => a && b
-```
+````
 
 ```js
 and(true, false) // => false
@@ -2211,7 +2262,8 @@ isGtE(5)(5) // => true
 Returns true if the value is a letter.
 
 ```js
-export const isLetter = x => typeof x === 'string' && x.toLowerCase() !== x.toUpperCase()
+export const isLetter = x =>
+	typeof x === 'string' && x.toLowerCase() !== x.toUpperCase()
 ```
 
 ```js
@@ -2512,9 +2564,9 @@ Negates a predicate function.
 
 ```js
 export const not =
-  fn =>
-  (...args) =>
-    !fn(...args)
+	fn =>
+	(...args) =>
+		!fn(...args)
 ```
 
 ```js
@@ -2563,11 +2615,11 @@ Creates a `Map` counting the occurrences of each item in the array.
 
 ```js
 export const setCountMap = xs =>
-  xs.reduce((map, x) => map.set(x, map.get(x) + 1 || 1), new Map())
+	xs.reduce((map, x) => map.set(x, map.get(x) + 1 || 1), new Map())
 ```
 
 ```js
-[...setCountMap(['a', 'b', 'a']).entries()] // => [['a', 2], ['b', 1]]
+;[...setCountMap(['a', 'b', 'a']).entries()] // => [['a', 2], ['b', 1]]
 ```
 
 ---
@@ -2604,7 +2656,7 @@ export function rangeGen(start = 0) {
 ```
 
 ```js
-[...rangeGen(1)(3)] // => [1, 2, 3]
+;[...rangeGen(1)(3)] // => [1, 2, 3]
 ```
 
 ---
@@ -2619,7 +2671,7 @@ export const unfold = fn => x => fn(x) ? [fn(x)[0], ...unfold(fn)(fn(x)[1])] : [
 ```
 
 ```js
-unfold(n => n > 0 ? [n, n - 1] : false)(3) // => [3, 2, 1]
+unfold(n => (n > 0 ? [n, n - 1] : false))(3) // => [3, 2, 1]
 ```
 
 ---
@@ -2691,40 +2743,38 @@ Evaluates a list of [predicate, result] pairs. Returns the first result whose pr
 
 ```js
 export const guard = pairs => input => {
-  for (const [predicate, result] of pairs) {
-    if (predicate(input)) {
-      return typeof result === 'function' ? result(input) : result
-    }
-  }
-  throw new Error('No guard matched')
+	for (const [predicate, result] of pairs) {
+		if (predicate(input)) {
+			return typeof result === 'function' ? result(input) : result
+		}
+	}
+	throw new Error('No guard matched')
 }
 ```
 
 ```js
 const describe = guard([
-  [x => x < 0,     'negative'],
-  [x => x === 0,   'zero'],
-  [() => true,     'positive']
-]);
+	[x => x < 0, 'negative'],
+	[x => x === 0, 'zero'],
+	[() => true, 'positive'],
+])
 
-describe(-5); // => "negative"
-describe(0);  // => "zero"
-describe(42); // => "positive"
+describe(-5) // => "negative"
+describe(0) // => "zero"
+describe(42) // => "positive"
 
 const label = guard([
-  [x => x < 0,     x => `neg ${x}`],
-  [x => x === 0,   () => 'zero'],
-  [() => true,     x => `pos ${x}`]
-]);
+	[x => x < 0, x => `neg ${x}`],
+	[x => x === 0, () => 'zero'],
+	[() => true, x => `pos ${x}`],
+])
 
-label(-3); // => "neg -3"
-label(0);  // => "zero"
-label(4);  // => "pos 4"
+label(-3) // => "neg -3"
+label(0) // => "zero"
+label(4) // => "pos 4"
 ```
 
 ---
-
-
 
 ### `nab`
 
@@ -3025,8 +3075,8 @@ export const apMaybe = maybeFn => maybeVal =>
 const add = x => y => x + y
 
 apMaybe(mapMaybe(add)(Maybe.Just(2)))(Maybe.Just(3)) // => Just(5)
-apMaybe(Maybe.Nothing())(Maybe.Just(3))             // => Nothing
-apMaybe(Maybe.Just(add(2)))(Maybe.Nothing())        // => Nothing
+apMaybe(Maybe.Nothing())(Maybe.Just(3)) // => Nothing
+apMaybe(Maybe.Just(add(2)))(Maybe.Nothing()) // => Nothing
 ```
 
 ---
@@ -3047,9 +3097,9 @@ export const apResult = resultFn => resultVal =>
 
 const add = x => y => x + y
 
-apResult(mapResult(add)(Result.Ok(2)))(Result.Ok(3))       // => Ok(5)
-apResult(Result.Err('bad fn'))(Result.Ok(3))               // => Err('bad fn')
-apResult(Result.Ok(add(2)))(Result.Err('bad val'))         // => Err('bad val')
+apResult(mapResult(add)(Result.Ok(2)))(Result.Ok(3)) // => Ok(5)
+apResult(Result.Err('bad fn'))(Result.Ok(3)) // => Err('bad fn')
+apResult(Result.Ok(add(2)))(Result.Err('bad val')) // => Err('bad val')
 ```
 
 ---
@@ -3092,14 +3142,13 @@ flatMapMaybe(x => Maybe.Just(x * 2))(Maybe.Just(2)) // => Just(4)
 Wraps a non-nullish value in a `Maybe.Just`. Returns `Maybe.Nothing` for `null` or `undefined`.
 
 ```js
-export const toMaybe = val =>
-  isNotNullish(val) ? Maybe.Just(val) : Maybe.Nothing()
+export const toMaybe = val => (isNotNullish(val) ? Maybe.Just(val) : Maybe.Nothing())
 ```
 
 ```js
-toMaybe(42)           // => Just(42)
-toMaybe(null)         // => Nothing
-toMaybe(undefined)    // => Nothing
+toMaybe(42) // => Just(42)
+toMaybe(null) // => Nothing
+toMaybe(undefined) // => Nothing
 ```
 
 ---
@@ -3250,4 +3299,3 @@ export const tryCatch = fn => arg => {
 ```js
 tryCatch(JSON.parse)('{"a":1}') // => Ok({ a: 1 })
 ```
-

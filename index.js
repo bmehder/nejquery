@@ -95,6 +95,16 @@ export const compact = xs => xs.filter(Boolean)
 
 export const reject = fn => xs => xs.filter(not(fn) ?? identity)
 
+export const allPass =
+	(...predicates) =>
+	x =>
+		predicates.every(p => p(x))
+
+export const anyPass =
+	(...predicates) =>
+	x =>
+		predicates.some(p => p(x))
+
 // DEPRECATED
 export const reduce = fn => xs => xs.reduce(fn)
 
