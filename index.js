@@ -418,6 +418,8 @@ export const getKeys = Object.keys
 
 export const getValues = Object.values
 
+export const lens = (getter, setter) => ({ get: getter, set: setter })
+
 // Helpers
 export const flip = fn => x => y => fn(y)(x)
 

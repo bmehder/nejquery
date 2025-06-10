@@ -1257,6 +1257,32 @@ getValues({ a: 1, b: 2 }) // => [1, 2]
 
 ---
 
+### `lens`
+
+**Description:**  
+Creates a first-class getter/setter pair that focuses on a specific property within a data structure. Lenses enable immutable updates and functional composition for nested values.
+
+```js
+export const lens = (getter, setter) => ({ get: getter, set: setter })
+```
+
+```js
+// Define a lens for the "name" field
+const nameLens = lens(
+  obj => obj.name,
+  (val, obj) => ({ ...obj, name: val })
+)
+
+const user = { name: "Alice", age: 30 }
+
+nameLens.get(user) // "Alice"
+
+nameLens.set("Bob", user)
+// => { name: "Bob", age: 30 }
+```
+
+---
+
 ### `groupBy`
 
 **Description:**  
