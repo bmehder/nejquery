@@ -401,6 +401,13 @@ export const or = (a, b) => a || b
 
 export const and = (a, b) => a && b
 
+export const trampoline = fn => {
+	while (typeof fn === 'function') {
+		fn = fn()
+	}
+	return fn
+}
+
 // Objects
 export const pluck = x => obj => obj[x]
 export const getProp = pluck
@@ -419,6 +426,30 @@ export const getKeys = Object.keys
 export const getValues = Object.values
 
 export const lens = (getter, setter) => ({ get: getter, set: setter })
+
+export const maybeLens = (getter, setter) => ({
+	get: obj => {
+		try {
+			const val = getter(obj)
+			return val == null ? Maybe.Nothing() : Maybe.Just(val)
+		} catch {
+			return Maybe.Nothing()
+		}
+	},
+	set: (val, obj) => setter(val, obj),
+})
+
+export const resultLens = (getter, setter, errMsg = 'Invalid access') => ({
+	get: obj => {
+		try {
+			const val = getter(obj)
+			return val == null ? Result.Err(errMsg) : Result.Ok(val)
+		} catch {
+			return Result.Err(errMsg)
+		}
+	},
+	set: (val, obj) => setter(val, obj),
+})
 
 // Helpers
 export const flip = fn => x => y => fn(y)(x)

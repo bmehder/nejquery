@@ -1283,6 +1283,88 @@ nameLens.set("Bob", user)
 
 ---
 
+### `maybeLens`
+
+**Description:**  
+Creates a lens that safely accesses a potentially missing or nullable property. The getter returns a Maybe, and the setter behaves like a normal lens setter.
+
+```js
+export const maybeLens = (getter, setter) => ({
+  get: obj => {
+    try {
+      const val = getter(obj)
+      return val == null ? Maybe.Nothing() : Maybe.Just(val)
+    } catch {
+      return Maybe.Nothing()
+    }
+  },
+  set: (val, obj) => setter(val, obj)
+})
+```
+
+```js
+// Example
+const user = { name: "Ali", address: { city: "Paris" } }
+
+const addressLens = maybeLens(
+  u => u.address,
+  (val, u) => ({ ...u, address: val })
+)
+
+const cityLens = maybeLens(
+  a => a.city,
+  (val, a) => ({ ...a, city: val })
+)
+
+const composed = composeLens(addressLens, cityLens)
+
+composed.get(user)
+// => Maybe.Just("Paris")
+
+composed.get({}) 
+// => Maybe.Nothing()
+```
+
+---
+### `resultLens`
+
+**Description:**  
+Creates a lens that provides safer access to a property with error messaging. The getter returns a Result, either Ok(value) or Err(message), and the setter behaves like a normal lens setter.
+
+```js
+export const resultLens = (getter, setter, errMsg = "Invalid access") => ({
+  get: obj => {
+    try {
+      const val = getter(obj)
+      return val == null ? Result.Err(errMsg) : Result.Ok(val)
+    } catch {
+      return Result.Err(errMsg)
+    }
+  },
+  set: (val, obj) => setter(val, obj)
+})
+```
+
+```js
+// Example
+const safeCityLens = resultLens(
+  u => u.address?.city,
+  (val, u) => ({
+    ...u,
+    address: { ...u.address, city: val }
+  }),
+  "City not found"
+)
+
+safeCityLens.get({ address: { city: "Rome" } })
+// => Result.Ok("Rome")
+
+safeCityLens.get({}) 
+// => Result.Err("City not found")
+```
+
+---
+
 ### `groupBy`
 
 **Description:**  
@@ -2654,6 +2736,36 @@ export const or = (a, b) => a || b
 
 ```js
 or(false, true) // => true
+```
+
+---
+
+### `trampoline`
+
+**Description:**  
+Runs a recursive computation by iteratively invoking thunks (functions with no arguments) until a final value is produced. This simulates tail call optimization and prevents stack overflows.
+
+```js
+export const trampoline = fn => {
+  while (typeof fn === 'function') {
+    fn = fn()
+  }
+  return fn
+}
+```
+
+```js
+// Example: Recursive sum without stack overflow
+const sum = (n, acc = 0) =>
+  n === 0 ? acc : () => sum(n - 1, acc + n)
+
+trampoline(() => sum(1_000_000)) // => 500000500000
+
+// Example: Factorial
+const factorial = (n, acc = 1) =>
+  n <= 1 ? acc : () => factorial(n - 1, acc * n)
+
+trampoline(() => factorial(10)) // => 3628800
 ```
 
 ---
