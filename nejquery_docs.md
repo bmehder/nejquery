@@ -3011,7 +3011,7 @@ delay(1000)(console.log)('hi')
 Returns a promise that resolves after `ms` milliseconds.
 
 ```js
-export const nap = ms => new Promise(resolve => setTimeout(resolve, ms))
+export const nap = ms => x => new Promise(resolve => setTimeout(() => resolve(x), ms))
 ```
 
 ```js

@@ -484,7 +484,7 @@ export const toJson = response => response.json()
 
 export const delay = ms => new Promise(res => setTimeout(res, +ms ?? 0))
 
-export const nap = ms => new Promise(resolve => setTimeout(resolve, ms))
+export const nap = ms => x => new Promise(resolve => setTimeout(() => resolve(x), ms))
 
 export const removeNonLetters = pipe(split(''), filter(isLetter), join(''))
 
