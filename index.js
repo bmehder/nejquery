@@ -480,6 +480,8 @@ export const ifElse = p => f => g => x => p(x) ? f(x) : g(x)
 
 export const nab = async url => await (await fetch(url)).json()
 
+export const toJson = response => response.json()
+
 export const delay = ms => new Promise(res => setTimeout(res, +ms ?? 0))
 
 export const nap = ms => new Promise(resolve => setTimeout(resolve, ms))

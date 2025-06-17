@@ -2971,6 +2971,25 @@ export const nab = async url => await (await fetch(url)).json()
 
 ---
 
+### `toJson`
+
+**Description:**  
+Converts a `Response` object (from `fetch`) into a parsed JSON value by calling its `.json()` method. Use in async pipelines such as `pipeWith(andThen)`.
+
+```js
+export const toJson = response => response.json()
+```
+```js
+const getData = url =>
+  fetch(url)
+    .then(toJson)
+    .then(console.log)
+
+getData('https://api.example.com/data') // Logs the parsed JSON response from the API
+```
+
+---
+
 ### `delay`
 
 **Description:**  
